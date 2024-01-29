@@ -63,8 +63,8 @@ int main()
 
     //view = camera
     sf::View view;
-    view.setSize(1920.f, 1080.f);
-    view.setCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
+    // view.setSize(window.getSize().x, window.getSize().y);
+    // view.setCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     //mouse
     sf::Vector2i mousePosScreen;
@@ -87,6 +87,9 @@ int main()
     {
         //update dt
         dt = dtClock.restart().asSeconds();
+
+        //update view
+        view.setSize(window.getSize().x, window.getSize().y);
 
         //update mouse pos
         prevMousePos = currMousePos;
@@ -142,12 +145,14 @@ int main()
                             (prevMousePos.y - currMousePos.y));
                 prevMousePos = currMousePos;
             }
+
+            if (event.type == sf::Event::Resized)
+            {
+                // update the view to the new size of the window
+                sf::FloatRect visibleArea(0.f, 0.f, event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
+            }
             
-            // if (event.type == sf::Event::Resized) {
-            //     // Масштабирование прямоугольника при изменении размера окна
-            //     sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-            //     window.setView(sf::View(visibleArea));
-            // }
 
         }
         //render
@@ -188,10 +193,10 @@ int main()
             }
         }
         // window.draw(rectangle);
-        // sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-        // window.setView(sf::View(visibleArea));
         window.draw(tileSelector);
-        window.setView(window.getDefaultView());
+        // window.setView(window.getDefaultView());
+        sf::FloatRect visibleArea(0, 0, window.getSize().x, window.getSize().y);
+        window.setView(sf::View(visibleArea));
 
         //render ui
         window.draw(text);
