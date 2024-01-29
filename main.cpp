@@ -15,7 +15,7 @@ int main()
 
 
     //grid
-    static float gridSizeF = 100.f;
+    static float gridSizeF = 50.f;
     static unsigned gridSizeU = static_cast<unsigned>(gridSizeF);
     float viewSpeed = 300.f;
     float dt = 0.f;
@@ -28,7 +28,7 @@ int main()
     shape.setFillColor(sf::Color::Green);
 
 
-    const int mapSize = 50;
+    const int mapSize = 100;
     std::vector<std::vector<sf::RectangleShape>> tileMap;
     tileMap.resize(mapSize, std::vector<sf::RectangleShape>());
 
@@ -80,10 +80,8 @@ int main()
     text.setPosition(20.f, 20.f);
     text.setString("TEST");
 
-
-
-    bool isPressedMLB = false;
-    sf::Vector2i localPosition;
+    sf::Vector2f prevMousePos;
+    sf::Vector2f currMousePos;
 
     while (window.isOpen())
     {
@@ -91,6 +89,9 @@ int main()
         dt = dtClock.restart().asSeconds();
 
         //update mouse pos
+        prevMousePos = currMousePos;
+        currMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
         mousePosScreen = sf::Mouse::getPosition();
         mousePosWindow = sf::Mouse::getPosition(window);
         window.setView(view);
@@ -100,7 +101,6 @@ int main()
         if(mousePosView.y >= 0.f)
             mousePosGrid.y = mousePosView.y / gridSizeU;
         window.setView(window.getDefaultView());
-
 
         //update game elements
         tileSelector.setPosition(mousePosGrid.x * gridSizeF, mousePosGrid.y * gridSizeF);
@@ -112,6 +112,7 @@ int main()
             << "View: " << mousePosView.x << " " << mousePosView.y << "\n"
             << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n";
 
+
         text.setString(ss.str());
 
         sf::Event event;
@@ -122,30 +123,8 @@ int main()
                 case sf::Event::Closed:
                     window.close();
                     break;
-
-                // case sf::Event::MouseButtonPressed:
-                //     if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                //     {
-                //         // rect_shape.setFillColor(sf::Color::Red);
-                //         isPressedMLB = true;
-                //     }
-                
-                // case sf::Event::MouseButtonReleased:
-                //     if(!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                //     {
-                //         // rect_shape.setFillColor(sf::Color::White);
-                //         isPressedMLB = false;
-                //     }
-
-                // case sf::Event::MouseMoved:
-                //     localPosition = sf::Mouse::getPosition();
-                //     // rect_shape.setPosition(localPosition.x, localPosition.y);
-                //     view.setCenter(localPosition.x, localPosition.y);
-                //     if(isPressedMLB)
-                //     {
-                //         view.zoom(0.5f);
-                //         // rect_shape.setFillColor(sf::Color::Red);
-                //     }
+                    
+                // view.setCenter(localPosition.x, localPosition.y);
             }
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -156,6 +135,14 @@ int main()
             {
                 view.move(viewSpeed * dt, 0.f);
             }
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                // currMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                view.move((prevMousePos.x - currMousePos.x), 
+                            (prevMousePos.y - currMousePos.y));
+                prevMousePos = currMousePos;
+            }
+            
             // if (event.type == sf::Event::Resized) {
             //     // Масштабирование прямоугольника при изменении размера окна
             //     sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
@@ -170,10 +157,10 @@ int main()
         window.setView(view);
         // window.draw(rect_shape);
 
-        fromX = view.getCenter().x / gridSizeF - 1;
-        toX = view.getCenter().x / gridSizeF + 2;
-        fromY = view.getCenter().y / gridSizeF  - 1;
-        toY = view.getCenter().y / gridSizeF + 2;
+        fromX = view.getCenter().x / gridSizeF - 7;
+        toX = view.getCenter().x / gridSizeF + 7;
+        fromY = view.getCenter().y / gridSizeF  - 7;
+        toY = view.getCenter().y / gridSizeF + 7;
 
         if(fromX < 0)
             fromX = 0;
