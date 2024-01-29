@@ -126,8 +126,6 @@ int main()
                 case sf::Event::Closed:
                     window.close();
                     break;
-                    
-                // view.setCenter(localPosition.x, localPosition.y);
             }
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -140,7 +138,6 @@ int main()
             }
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
-                // currMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                 view.move((prevMousePos.x - currMousePos.x), 
                             (prevMousePos.y - currMousePos.y));
                 prevMousePos = currMousePos;
@@ -152,7 +149,6 @@ int main()
         
         //render game elements
         window.setView(view);
-        // window.draw(rect_shape);
 
         fromX = view.getCenter().x / gridSizeF - 7;
         toX = view.getCenter().x / gridSizeF + 7;
@@ -184,7 +180,7 @@ int main()
                 window.draw(tileMap[x][y]);
             }
         }
-        // window.draw(rectangle);
+        
         window.draw(tileSelector);
         // window.setView(window.getDefaultView());
         sf::FloatRect visibleArea(0, 0, window.getSize().x, window.getSize().y);
