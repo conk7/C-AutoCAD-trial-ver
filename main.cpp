@@ -45,7 +45,7 @@ void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const gr
     {
         sf::RectangleShape line;
         line.setFillColor(sf::Color::Black);
-        line.setPosition(gridLeftBorder - gridSize, 0);
+        line.setPosition(gridLeftBorder - gridSize, -1);
         line.setSize(sf::Vector2f(viewSize.x + gridSize * 2, 3));
         window.draw(line);
         gridIdx += gridSize;
@@ -55,7 +55,7 @@ void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const gr
     {
         sf::RectangleShape line;
         line.setFillColor(sf::Color::Black);
-        line.setPosition(0, gridTopBorder - gridSize);
+        line.setPosition(-1, gridTopBorder - gridSize);
         line.setSize(sf::Vector2f(3, viewSize.y + gridSize));
         window.draw(line);
         gridIdx += gridSize;
@@ -218,7 +218,6 @@ int main()
             {
                 view.move((prevMousePos.x - currMousePos.x), 
                             (prevMousePos.y - currMousePos.y));
-                // prevMousePos = currMousePos;
             }          
 
         }
