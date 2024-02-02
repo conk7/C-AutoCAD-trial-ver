@@ -16,7 +16,7 @@ void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const gr
     float viewTopBorder = viewCenter.y - (viewSize.y / 2);
     float gridTopBorder = ceil(viewTopBorder / gridSize) * gridSize;
     float viewBottomBorder = viewCenter.y + (viewSize.y / 2);
-    float gridBottomBorder = ceil(viewBottomBorder / gridSize) * gridSize;
+    float gridBottomBorder = floor(viewBottomBorder / gridSize) * gridSize;
     
     float gridIdx = gridLeftBorder;
 
