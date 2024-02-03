@@ -5,7 +5,7 @@
 #include <vector>
 #include <math.h>
 
-void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const gridSize)
+void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const &gridSize)
 {
     sf::Vector2f viewCenter = view.getCenter();
     sf::Vector2f viewSize = view.getSize();
@@ -19,7 +19,6 @@ void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const gr
     float gridBottomBorder = floor(viewBottomBorder / gridSize) * gridSize;
     
     float gridIdx = gridLeftBorder;
-
     while (gridIdx < gridRightBorder)
     {
         sf::RectangleShape line;
@@ -60,12 +59,17 @@ void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const gr
         window.draw(line);
         gridIdx += gridSize;
     }
+}
 
+void updateMousePos(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos)
+{
+    prevMousePos = currMousePos;
+    currMousePos = sf::Mouse::getPosition();
 }
 
 int main()
 {
-    //default width and height of the window
+    //default window width and height
     const uint16_t SCREEN_WIDTH = 1920;
     const uint16_t SCREEN_HEIGHT = 1080;
 
@@ -87,41 +91,25 @@ int main()
     rect_shape.setPosition(100.f,100.f);
     shape.setFillColor(sf::Color::Green);
 
-    // const int mapSizeX = window.getSize().x / gridSizeU + 3;
-    // const int mapSizeY = window.getSize().y / gridSizeU + 3;
-    // std::vector<std::vector<sf::RectangleShape>> tileMap;
-    // tileMap.resize(mapSizeX, std::vector<sf::RectangleShape>());
-
     sf::RectangleShape background;
     background.setFillColor(sf::Color::White);
     background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), 
                         static_cast<float>(window.getSize().y))); //полнейшая хуетень but works
 
-    int fromX = 0;
-    int fromY = 0;
-    int toX = 0;
-    int toY = 0;
-
-    sf::RectangleShape tileSelector(sf::Vector2f(gridSizeF, gridSizeF));
-    tileSelector.setFillColor(sf::Color::Transparent);
-    tileSelector.setOutlineColor(sf::Color::Blue);
-    tileSelector.setOutlineThickness(2.f);
-    
-
-    // sf::RectangleShape rectangle(sf::Vector2f(200.0f, 100.0f));
-    // rectangle.setFillColor(sf::Color::Red);
-    // rectangle.setPosition(window.getSize().x/2.f, window.getSize().y/2.f);
-
-    //view = camera
+    //view
     sf::View view;
-    // view.setSize(window.getSize().x, window.getSize().y);
-    // view.setCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
+    view.setCenter(0,0);
 
     //mouse
     sf::Vector2i mousePosScreen;
     sf::Vector2i mousePosWindow;
     sf::Vector2f mousePosView;
     sf::Vector2u mousePosGrid;
+
+    sf::Vector2i prevMousePos;
+    sf::Vector2i currMousePos;
+
+    //debug info
     sf::Font font;
     font.loadFromFile("Dosis-VariableFont_wght.ttf");
     sf::Text text;
@@ -132,20 +120,28 @@ int main()
     text.setOutlineColor(sf::Color::Black);
     text.setOutlineThickness(1.f);
 
-    sf::Vector2i prevMousePos;
-    sf::Vector2i currMousePos;
 
+    //zoom
+    // const float zoomAmount = 0.1;
+    // float currZoom = 1;
+    // sf::View visibleArea(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+    // visibleArea.zoom(0.5);
+    // // visibleArea.setSize(sf::Vector2f(1920, 1080));
+    // visibleArea.setViewport(sf::FloatRect(0, 0, 1, 1));
+    // visibleArea.setCenter(visibleArea.getSize().x/2, visibleArea.getSize().y/2);
+    // // visibleArea.setCenter(0,0);
+
+    //main loop
     while (window.isOpen())
     {
         //update dt
-        dt = dtClock.restart().asSeconds();
+        // dt = dtClock.restart().asSeconds();
 
         //update view
         view.setSize(window.getSize().x, window.getSize().y);
 
         //update mouse pos
-        prevMousePos = currMousePos;
-        currMousePos = sf::Mouse::getPosition(window);
+        updateMousePos(prevMousePos, currMousePos);
 
         mousePosScreen = sf::Mouse::getPosition();
         mousePosWindow = sf::Mouse::getPosition(window);
@@ -157,76 +153,35 @@ int main()
             mousePosGrid.y = mousePosView.y / gridSizeU;
         window.setView(window.getDefaultView());
 
-        sf::Vector2i negmousePosGrid;
-        negmousePosGrid.x = mousePosView.x / gridSizeU;
-        negmousePosGrid.y = mousePosView.y / gridSizeU;
-
-        //update game elements
-        // tileSelector.setPosition(mousePosGrid.x * gridSizeF, 
-                                    // mousePosGrid.y * gridSizeF); //old tile selecton
-        if(negmousePosGrid.x >= 0 && negmousePosGrid.y >= 0)
-        {
-            tileSelector.setPosition(negmousePosGrid.x * gridSizeF, 
-                                    negmousePosGrid.y * gridSizeF); //new tile selection that works incorrectly
-        }                                                        //with negative values
-        else if(negmousePosGrid.x < 0 && negmousePosGrid.y >= 0)
-        {
-            tileSelector.setPosition(negmousePosGrid.x * gridSizeF - gridSizeF, 
-                                    negmousePosGrid.y * gridSizeF);
-        }
-        else if(negmousePosGrid.x > 0 && negmousePosGrid.y < 0)
-        {
-            tileSelector.setPosition(negmousePosGrid.x * gridSizeF, 
-                                    negmousePosGrid.y * gridSizeF - gridSizeF);
-        }
-        else if(negmousePosGrid.x < 0 && negmousePosGrid.y < 0)
-        {
-            tileSelector.setPosition(negmousePosGrid.x * gridSizeF - gridSizeF, 
-                                    negmousePosGrid.y * gridSizeF - gridSizeF);
-        }
-
-
         //update ui
         std::stringstream ss;
         ss << "Screen: " << mousePosScreen.x << " " << mousePosScreen.y << "\n"
             << "Window: " << mousePosWindow.x << " " << mousePosWindow.y << "\n"
             << "View: " << mousePosView.x << " " << mousePosView.y << "\n"
             << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n";
-
-
         text.setString(ss.str());
 
+        //event loop
         sf::Event event;
         while (window.pollEvent(event))
         {
-            switch (event.type)
-            {
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-            }
+            if(event.type == sf::Event::Closed)
+                window.close();
 
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            {
-                view.move(-viewSpeed * dt, 0.f);
-            }
-            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            {
-                view.move(viewSpeed * dt, 0.f);
-            }
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 view.move((prevMousePos.x - currMousePos.x), 
                             (prevMousePos.y - currMousePos.y));
-            }          
-
+            }     
+                 
         }
 
         //render begins
         window.clear();
-
-        sf::FloatRect visibleArea(0, 0, window.getSize().x, window.getSize().y);
-        window.setView(sf::View(visibleArea));
+        sf::View visibleArea (sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+        // visibleArea.setSize(sf::Vector2f(1920/2, 1080/2));
+        // visibleArea.zoom(2);
+        window.setView(visibleArea);
         window.draw(background);
         
         //render game elements
@@ -234,13 +189,13 @@ int main()
        
         draw_axes(window, view, gridSizeU);
         
-        window.draw(tileSelector);
         // window.setView(window.getDefaultView());
         // sf::FloatRect visibleArea(0, 0, window.getSize().x, window.getSize().y);
-        window.setView(sf::View(visibleArea));
+        window.setView(visibleArea);
 
         //render ui
         window.draw(text);
+
         window.display();
         //render ends
     }
