@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <sstream>
 #include <vector>
-#include "grid.hpp"
+#include "D:\Files\repos\fjiourenpor\include\grid.hpp"
 
 void updateMousePos(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos)
 {
@@ -49,7 +49,7 @@ int main()
 
     //debug info
     sf::Font font;
-    font.loadFromFile("Dosis-VariableFont_wght.ttf");
+    font.loadFromFile("D:\\Files\\repos\\fjiourenpor\\misc\\Dosis-VariableFont_wght.ttf");
     sf::Text text;
     text.setCharacterSize(70);
     text.setFillColor(sf::Color::White);

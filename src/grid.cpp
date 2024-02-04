@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "grid.hpp"
+#include "D:\Files\repos\fjiourenpor\include\grid.hpp"
 #include <math.h>
 
 Grid::Grid()
