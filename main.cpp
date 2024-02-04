@@ -1,65 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include <sstream>
 #include <vector>
-#include <math.h>
-
-void draw_axes(sf::RenderWindow &window, sf::View const &view, unsigned const &gridSize)
-{
-    sf::Vector2f viewCenter = view.getCenter();
-    sf::Vector2f viewSize = view.getSize();
-    float viewLeftBorder = viewCenter.x - (viewSize.x / 2);
-    float gridLeftBorder = floor(viewLeftBorder / gridSize) * gridSize;
-    float viewRightBorder = viewCenter.x + (viewSize.x / 2);
-    float gridRightBorder = ceil(viewRightBorder / gridSize) * gridSize;
-    float viewTopBorder = viewCenter.y - (viewSize.y / 2);
-    float gridTopBorder = ceil(viewTopBorder / gridSize) * gridSize;
-    float viewBottomBorder = viewCenter.y + (viewSize.y / 2);
-    float gridBottomBorder = floor(viewBottomBorder / gridSize) * gridSize;
-    
-    float gridIdx = gridLeftBorder;
-    while (gridIdx < gridRightBorder)
-    {
-        sf::RectangleShape line;
-        line.setFillColor(sf::Color::Black);
-        line.setPosition(gridIdx, gridTopBorder - gridSize);
-        line.setSize(sf::Vector2f(1, viewSize.y + gridSize));
-        window.draw(line);
-        gridIdx += gridSize;
-    }
-
-    gridIdx = gridBottomBorder;
-    while (gridIdx >= gridTopBorder)
-    {
-        sf::RectangleShape line;
-        line.setFillColor(sf::Color::Black);
-        line.setPosition(gridLeftBorder - gridSize, gridIdx);
-        line.setSize(sf::Vector2f(viewSize.x + gridSize * 2, 1));
-        window.draw(line);
-        gridIdx -= gridSize;
-    }
-
-    if(gridBottomBorder > 0 && gridTopBorder < 0)
-    {
-        sf::RectangleShape line;
-        line.setFillColor(sf::Color::Black);
-        line.setPosition(gridLeftBorder - gridSize, -1);
-        line.setSize(sf::Vector2f(viewSize.x + gridSize * 2, 3));
-        window.draw(line);
-        gridIdx += gridSize;
-    }
-
-    if(gridRightBorder > 0 && gridLeftBorder < 0)
-    {
-        sf::RectangleShape line;
-        line.setFillColor(sf::Color::Black);
-        line.setPosition(-1, gridTopBorder - gridSize);
-        line.setSize(sf::Vector2f(3, viewSize.y + gridSize));
-        window.draw(line);
-        gridIdx += gridSize;
-    }
-}
+#include "grid.hpp"
 
 void updateMousePos(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos)
 {
@@ -70,24 +12,20 @@ void updateMousePos(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos)
 int main()
 {
     //default window width and height
-    const uint16_t SCREEN_WIDTH = 1920;
-    const uint16_t SCREEN_HEIGHT = 1080;
+    const uint16_t SCREENW = 1920;
+    const uint16_t SCREENH = 1080;
 
     //creating and configuring the window
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "52");  // sf::Style::Fullscreen
+    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52");  // sf::Style::Fullscreen
     window.setVerticalSyncEnabled(true);
-    window.setKeyRepeatEnabled(true);
+    window.setKeyRepeatEnabled(false);
 
     //grid
-    static float gridSizeF = 50.f;
-    static unsigned gridSizeU = static_cast<unsigned>(gridSizeF);
-    float viewSpeed = 300.f;
-    float dt = 0.f;
-    sf::Clock dtClock;
+    Grid grid(40.f);
 
     //init game elements
     sf::CircleShape shape(1000.f);
-    sf::RectangleShape rect_shape(sf::Vector2f(gridSizeF, gridSizeF));
+    sf::RectangleShape rect_shape(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
     rect_shape.setPosition(100.f,100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -148,9 +86,9 @@ int main()
         window.setView(view);
         mousePosView = window.mapPixelToCoords(mousePosWindow);
         if(mousePosView.x >= 0.f)
-            mousePosGrid.x = mousePosView.x / gridSizeU;
+            mousePosGrid.x = mousePosView.x / grid.getGridSizeU();
         if(mousePosView.y >= 0.f)
-            mousePosGrid.y = mousePosView.y / gridSizeU;
+            mousePosGrid.y = mousePosView.y / grid.getGridSizeU();
         window.setView(window.getDefaultView());
 
         //update ui
@@ -168,11 +106,15 @@ int main()
             if(event.type == sf::Event::Closed)
                 window.close();
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 view.move((prevMousePos.x - currMousePos.x), 
                             (prevMousePos.y - currMousePos.y));
-            }     
+            }
+            else if(sf::Event::MouseButtonReleased)
+            {
+                
+            }
                  
         }
 
@@ -187,7 +129,7 @@ int main()
         //render game elements
         window.setView(view);
        
-        draw_axes(window, view, gridSizeU);
+        grid.draw_axes(window, view);
         
         // window.setView(window.getDefaultView());
         // sf::FloatRect visibleArea(0, 0, window.getSize().x, window.getSize().y);
