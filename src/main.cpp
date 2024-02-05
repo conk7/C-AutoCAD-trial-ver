@@ -32,7 +32,7 @@ int main()
     sf::RectangleShape background;
     background.setFillColor(sf::Color::White);
     background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), 
-                        static_cast<float>(window.getSize().y))); //полнейшая хуетень but works
+                        static_cast<float>(window.getSize().y))); //полнейшая хуетень
 
     //view
     sf::View view;
@@ -49,7 +49,7 @@ int main()
 
     //debug info
     sf::Font font;
-    font.loadFromFile("D:\\Files\\repos\\fjiourenpor\\misc\\Dosis-VariableFont_wght.ttf");
+    font.loadFromFile("misc/Dosis-VariableFont_wght.ttf");
     sf::Text text;
     text.setCharacterSize(70);
     text.setFillColor(sf::Color::White);
