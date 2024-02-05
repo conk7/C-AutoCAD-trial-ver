@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "D:\Files\repos\fjiourenpor\include\grid.hpp"
+#include "..\include\grid.hpp"
 #include <math.h>
 
 Grid::Grid()
@@ -56,7 +56,6 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
         line.setPosition(gridLeftBorder - gridSizeU, -1);
         line.setSize(sf::Vector2f(viewSize.x + gridSizeU * 2, 3));
         window.draw(line);
-        gridIdx += gridSizeU;
     }
 
     if(gridRightBorder > 0 && gridLeftBorder < 0)
@@ -66,7 +65,6 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
         line.setPosition(-1, gridTopBorder - gridSizeU);
         line.setSize(sf::Vector2f(3, viewSize.y + gridSizeU));
         window.draw(line);
-        gridIdx += gridSizeU;
     }
 }
 

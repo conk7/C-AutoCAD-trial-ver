@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <sstream>
 #include <vector>
-#include "D:\Files\repos\fjiourenpor\include\grid.hpp"
+#include "..\include\grid.hpp"
 
 void updateMousePos(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos)
 {
