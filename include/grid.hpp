@@ -9,7 +9,7 @@ public:
     Grid();
     Grid(float const gridSizeF);
 
-    void draw_axes(sf::RenderWindow &window, sf::View const &view);
+    void draw_axes(sf::RenderWindow &window, sf::View const &view, float const currZoom);
     float getGridSizeF() const;
     unsigned getGridSizeU() const;
     void setGridSizeF(float const gridSizeF);

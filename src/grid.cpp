@@ -14,7 +14,7 @@ Grid::Grid(float const gridSizeF)
     this->gridSizeU = static_cast<unsigned>(gridSizeF);
 }
 
-void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
+void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, float const currZoom)
 {
     sf::Vector2f viewCenter = view.getCenter();
     sf::Vector2f viewSize = view.getSize();
@@ -33,7 +33,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
         sf::RectangleShape line;
         line.setFillColor(sf::Color::Black);
         line.setPosition(gridIdx, gridTopBorder - gridSizeU);
-        line.setSize(sf::Vector2f(1, viewSize.y + gridSizeU));
+        line.setSize(sf::Vector2f(1/currZoom, viewSize.y + gridSizeU));
         window.draw(line);
         gridIdx += gridSizeU;
     }
@@ -44,7 +44,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
         sf::RectangleShape line;
         line.setFillColor(sf::Color::Black);
         line.setPosition(gridLeftBorder - gridSizeU, gridIdx);
-        line.setSize(sf::Vector2f(viewSize.x + gridSizeU * 2, 1));
+        line.setSize(sf::Vector2f(viewSize.x + gridSizeU * 2, 1/currZoom));
         window.draw(line);
         gridIdx -= gridSizeU;
     }
@@ -54,7 +54,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
         sf::RectangleShape line;
         line.setFillColor(sf::Color::Black);
         line.setPosition(gridLeftBorder - gridSizeU, -1);
-        line.setSize(sf::Vector2f(viewSize.x + gridSizeU * 2, 3));
+        line.setSize(sf::Vector2f(viewSize.x + gridSizeU * 2, 4 /currZoom));
         window.draw(line);
     }
 
@@ -63,7 +63,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view)
         sf::RectangleShape line;
         line.setFillColor(sf::Color::Black);
         line.setPosition(-1, gridTopBorder - gridSizeU);
-        line.setSize(sf::Vector2f(3, viewSize.y + gridSizeU));
+        line.setSize(sf::Vector2f(4 /currZoom, viewSize.y + gridSizeU));
         window.draw(line);
     }
 }

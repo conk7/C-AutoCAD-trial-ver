@@ -1,4 +1,4 @@
-all: compile link
+all: compile link clean
 
 #REMEMBER TO CHANGE PATHS
 compile:
