@@ -21,43 +21,20 @@ void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos
     currMousePos = sf::Mouse::getPosition(window);
 }
 
-// void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow &window, sf::View &view, float zoomDiff, std::stringstream &ss)
-// {
-//     sf::View dummyView = window.getDefaultView();
-// 	const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
-//     // dummyView.setSize(window.getSize().x/zoomDiff, window.getSize().y/zoomDiff);
-//     // dummyView.setCenter(window.getDefaultView().getCenter());
-//     dummyView.zoom(zoomDiff);
-//     window.setView(dummyView);
-//     // const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
-// 	// const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
-//     // dummyView.move(offsetCoords);
-// 	window.setView(dummyView);
-//     view = dummyView;
-//     // ss << "BeforeCoords " << beforeCoord.x << " " << beforeCoord.y << " " << "\n"
-//     // << "AfterCoords " << afterCoord.x << " " << afterCoord.y << " "  << "\n";
-// 	// sf::View view{ window.getView() };
-// 	//view.zoom(zoom);
-// 	//window.setView(view);
-	
-// }
+void zoomViewAtMouse(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float scale) {
+    sf::Vector2f viewCenter = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+    view.setCenter(viewCenter);
+    view.zoom(scale);
+    window.setView(view);
+}
 
-// void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow &window, float zoom, sf::View &visibleArea, std::stringstream &ss)
-// {
-//     const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
-// 	sf::View view = visibleArea;
-// 	view.zoom(zoom);
-// 	window.setView(view);
-// 	const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
-// 	const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
-// 	view.move(offsetCoords);
-// 	window.setView(view);
-//     visibleArea = view;
-
-
-//     ss << "BeforeCoords " << beforeCoord.x << " " << beforeCoord.y << " " << "\n"
-//     << "AfterCoords " << afterCoord.x << " " << afterCoord.y << " "  << "\n";
-// }
+void zoomViewAtCenter(sf::View& view, float factor, sf::RenderWindow& window)
+{
+    sf::Vector2f viewSize = view.getSize();
+    sf::Vector2f viewCenter = view.getCenter();
+    view.zoom(factor);
+    window.setView(view);
+}
 
 int main()
 
@@ -122,8 +99,9 @@ int main()
     tileSelector.setOutlineThickness(3);
 
     //zoom
-    const float zoomDiff = 0.01;
+    const float zoomDiff = 0.1;
     float currZoom = 1;
+    int counter = 0; 
     // sf::View visibleArea(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
     // visibleArea.zoom(0.5);
     // // visibleArea.setSize(sf::Vector2f(1920, 1080));
@@ -194,20 +172,20 @@ int main()
                 circle.setFillColor(sf::Color::Red);
                 toDraw.push_back(circle);
             }
-            // if (event.type == sf::Event::MouseWheelScrolled)
-            // {
-            //     if (event.mouseWheelScroll.delta > 0 && currZoom < 2)
-            //     {
-            //         currZoom += zoomDiff; 
-            //         zoomViewAt({ currMousePosWindow.x, currMousePosWindow.y }, window, view, 1/1.1, ss); 
-            //     }
-
-            //     else if (event.mouseWheelScroll.delta < 0)
-            //     {
-            //         currZoom -= zoomDiff;
-            //         zoomViewAt({ currMousePosWindow.x, currMousePosWindow.y }, window, view, 1.1, ss);
-            //     }
-            // }
+            if (event.type == sf::Event::MouseWheelMoved) {
+                if (event.mouseWheel.delta > 0 && counter < 6) {
+                    counter += 1;
+                    int mouseX = sf::Mouse::getPosition(window).x;
+                    int mouseY = sf::Mouse::getPosition(window).y;
+                    currZoom -= event.mouseWheel.delta * 0.1f;
+                    zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
+                    }
+                if (event.mouseWheel.delta < 0 && counter > -6) {
+                    counter -= 1;
+                    currZoom += event.mouseWheel.delta * 0.1f;
+                    zoomViewAtCenter(view, 1.1, window);
+                }
+            }
             text.setString(ss.str());    
         }
        
