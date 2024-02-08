@@ -19,4 +19,6 @@ public:
     std::vector<tLine> getEdges() const;
     std::vector<sf::CircleShape> getVerts() const;
     bool isFinished();
+    std::vector<sf::Vector2f> getVertsCoords();
+    void draw(sf::RenderWindow window);
 };

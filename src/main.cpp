@@ -69,9 +69,10 @@ int main()
     const uint16_t SCREENH = 1080;
 
     //creating and configuring the window
-    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52");  // sf::Style::Fullscreen
+    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));  // sf::Style::Fullscreen
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
+    bool isFullscreen = false;
     
     //grid
     Grid grid(100.f);
@@ -145,9 +146,9 @@ int main()
     while (window.isOpen())
     {
         //update view
-        // view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
-        // visibleArea.setSize(window.getSize().x, window.getSize().y);
-        // visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
+        view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
+        visibleArea.setSize(window.getSize().x, window.getSize().y);
+        visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
 
         //update bg
         background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), 
@@ -227,6 +228,17 @@ int main()
                 //     shapes[shapes.size() - 1].addVert(currMousePosView);
                 // }
             }
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
+            {
+                window.create(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));
+                isFullscreen = false;
+            }
+            else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && !isFullscreen)
+            {
+                window.create(sf::VideoMode(SCREENW, SCREENH), "52", sf::Style::Fullscreen, sf::ContextSettings(24,8,8));
+                isFullscreen = true;
+            }
+            
             // if (event.type == sf::Event::MouseWheelScrolled)
             // {
             //     if (event.mouseWheelScroll.delta > 0 && currZoom < 2)

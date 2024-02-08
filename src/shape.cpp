@@ -16,8 +16,9 @@ void Shape::addVert(sf::Vector2i coords)
 {
     if(edges.size() == 0)
     {
-        sf::CircleShape circle(5);
-        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y)));
+        float radius = 5;
+        sf::CircleShape circle(radius);
+        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
         circle.setFillColor(sf::Color::Red);
         verts.push_back(circle);
 
@@ -28,8 +29,9 @@ void Shape::addVert(sf::Vector2i coords)
     }
     else if(edges.size() < maxVertCount)
     {
-        sf::CircleShape circle(5);
-        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y)));
+        float radius = 5;
+        sf::CircleShape circle(radius);
+        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
         circle.setFillColor(sf::Color::Red);
         verts.push_back(circle);
 
@@ -72,3 +74,28 @@ bool Shape::isFinished()
 {
     return finished;
 }
+
+std::vector<sf::Vector2f> Shape::getVertsCoords()
+{
+    std::vector<sf::Vector2f> coords(maxVertCount);
+    for (int i = 0; i < maxVertCount; i++)
+        coords[i] = sf::Vector2f(verts[i].getPosition().x, verts[i].getPosition().y);
+    return coords;
+}
+
+// void Shape::draw(sf::RenderWindow &window)
+// {
+//     for (auto &shape : shapes)
+//     {
+//         std::vector<tLine> edges = shape.getEdges();
+//         for(auto &edge : edges)
+//         {
+//             window.draw(edge);
+//         }
+//         std::vector<sf::CircleShape> verts = shape.getVerts();
+//         for(auto &vert : verts)
+//         {
+//             window.draw(vert);
+//         }
+//     }
+// }
