@@ -2,6 +2,8 @@
 #include <sstream>
 #include <vector>
 #include "..\include\grid.hpp"
+#include "..\include\shape.hpp"
+#include "..\include\line.hpp"
 #include <math.h>
 
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
@@ -13,6 +15,7 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
     sf::Vector2f currMousePosF = window.mapPixelToCoords(currMousePos);
     currMousePos = { static_cast<int>(currMousePosF.x), static_cast<int>(currMousePosF.y) };
     window.setView(window.getDefaultView());
+
 }
 
 void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window)
@@ -36,6 +39,50 @@ void zoomViewAtCenter(sf::View& view, float factor, sf::RenderWindow& window)
     window.setView(view);
 }
 
+void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window)
+{
+    prevMousePos = currMousePos;
+    currMousePos = sf::Mouse::getPosition(window);
+}
+
+// void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow &window, sf::View &view, float zoomDiff, std::stringstream &ss)
+// {
+//     sf::View dummyView = window.getDefaultView();
+// 	const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
+//     // dummyView.setSize(window.getSize().x/zoomDiff, window.getSize().y/zoomDiff);
+//     // dummyView.setCenter(window.getDefaultView().getCenter());
+//     dummyView.zoom(zoomDiff);
+//     window.setView(dummyView);
+//     // const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
+// 	// const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
+//     // dummyView.move(offsetCoords);
+// 	window.setView(dummyView);
+//     view = dummyView;
+//     // ss << "BeforeCoords " << beforeCoord.x << " " << beforeCoord.y << " " << "\n"
+//     // << "AfterCoords " << afterCoord.x << " " << afterCoord.y << " "  << "\n";
+// 	// sf::View view{ window.getView() };
+// 	//view.zoom(zoom);
+// 	//window.setView(view);
+	
+// }
+
+// void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow &window, float zoom, sf::View &visibleArea, std::stringstream &ss)
+// {
+//     const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
+// 	sf::View view = visibleArea;
+// 	view.zoom(zoom);
+// 	window.setView(view);
+// 	const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
+// 	const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
+// 	view.move(offsetCoords);
+// 	window.setView(view);
+//     visibleArea = view;
+
+
+//     ss << "BeforeCoords " << beforeCoord.x << " " << beforeCoord.y << " " << "\n"
+//     << "AfterCoords " << afterCoord.x << " " << afterCoord.y << " "  << "\n";
+// }
+
 int main()
 
 {
@@ -44,16 +91,17 @@ int main()
     const uint16_t SCREENH = 1080;
 
     //creating and configuring the window
-    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52");  // sf::Style::Fullscreen
+    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));  // sf::Style::Fullscreen
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
+    bool isFullscreen = false;
     
     //grid
     Grid grid(100.f);
 
     //init game elements
     sf::CircleShape shape(1000.f);
-    sf::RectangleShape rect_shape(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
+    sf::RectangleShape rect_shape(sf::Vector2f(grid.getGridSizeF()*5, grid.getGridSizeF()*5));
     rect_shape.setPosition(100.f,100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -97,17 +145,13 @@ int main()
     tileSelector.setFillColor(sf::Color::Transparent);
     tileSelector.setOutlineColor(sf::Color::Blue);
     tileSelector.setOutlineThickness(3);
+  
+    std::vector<Shape> shapes;
 
     //zoom
-    const float zoomDiff = 0.1;
+    const float zoomDiff = 0.01;
     float currZoom = 1;
     int counter = 0; 
-    // sf::View visibleArea(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-    // visibleArea.zoom(0.5);
-    // // visibleArea.setSize(sf::Vector2f(1920, 1080));
-    // visibleArea.setViewport(sf::FloatRect(0, 0, 1, 1));
-    // visibleArea.setCenter(visibleArea.getSize().x/2, visibleArea.getSize().y/2);
-    // // visibleArea.setCenter(0,0);
 
     std::vector<sf::CircleShape> toDraw;
 
@@ -115,9 +159,15 @@ int main()
     while (window.isOpen())
     {
         //update view
+// <<<<<<< dev-conk7
+//         view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
+//         visibleArea.setSize(window.getSize().x, window.getSize().y);
+//         visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
+=======
         // view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
         // visibleArea.setSize(window.getSize().x, window.getSize().y);
         // visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
+// >>>>>>> Pablo-
 
         //update bg
         background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), 
@@ -128,6 +178,11 @@ int main()
         //update mouse pos
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
         updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window);
+
+        if(shapes.size() > 0)
+        {
+            shapes[shapes.size() - 1].updateDE(currMousePosView);
+        }
 
         mousePosScreen = sf::Mouse::getPosition();
         mousePosWindow = sf::Mouse::getPosition(window);
@@ -167,25 +222,55 @@ int main()
             }
             if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased)
             {
-                sf::CircleShape circle(10);
-                circle.setPosition(sf::Vector2f(static_cast<float>(currMousePosView.x), static_cast<float>(currMousePosView.y)));
-                circle.setFillColor(sf::Color::Red);
-                toDraw.push_back(circle);
+
+                if(shapes.size() == 0)
+                {
+                    Shape shape(3);
+                    shape.addVert(currMousePosView);
+                    shapes.push_back(shape);
+                }
+                else if (shapes.size() != 0 && !shapes[shapes.size() - 1].isFinished())
+                {
+                    shapes[shapes.size() - 1].addVert(currMousePosView);
+                    auto edges = shapes[shapes.size() - 1].getEdges();
+                    ss << edges.size();
+                }
+                else if (shapes.size() != 0 && shapes[shapes.size() - 1].isFinished())
+                {
+                    Shape shape(3);
+                    shape.addVert(currMousePosView);
+                    shapes.push_back(shape);
+                }
+                // else
+                // {
+                //     shapes[shapes.size() - 1].addVert(currMousePosView);
+                // }
+            }
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
+            {
+                window.create(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));
+                isFullscreen = false;
+            }
+            else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && !isFullscreen)
+            {
+                window.create(sf::VideoMode(SCREENW, SCREENH), "52", sf::Style::Fullscreen, sf::ContextSettings(24,8,8));
+                isFullscreen = true;
             }
             if (event.type == sf::Event::MouseWheelMoved) {
-                if (event.mouseWheel.delta > 0 && counter < 6) {
-                    counter += 1;
-                    int mouseX = sf::Mouse::getPosition(window).x;
-                    int mouseY = sf::Mouse::getPosition(window).y;
-                    currZoom -= event.mouseWheel.delta * 0.1f;
-                    zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
-                    }
-                if (event.mouseWheel.delta < 0 && counter > -6) {
-                    counter -= 1;
-                    currZoom += event.mouseWheel.delta * 0.1f;
-                    zoomViewAtCenter(view, 1.1, window);
-                }
-            }
+                  if (event.mouseWheel.delta > 0 && counter < 6) {
+                      counter += 1;
+                      int mouseX = sf::Mouse::getPosition(window).x;
+                      int mouseY = sf::Mouse::getPosition(window).y;
+                      currZoom -= event.mouseWheel.delta * 0.1f;
+                      zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
+                      }
+                  if (event.mouseWheel.delta < 0 && counter > -6) {
+                      counter -= 1;
+                      currZoom += event.mouseWheel.delta * 0.1f;
+                      zoomViewAtCenter(view, 1.1, window);
+                  }
+              }
+
             text.setString(ss.str());    
         }
        
@@ -210,11 +295,24 @@ int main()
        
         grid.draw_axes(window, view, currZoom);
         window.draw(tileSelector);
-        for (auto &shape : toDraw)
+
+        for (auto &shape : shapes)
         {
-            window.draw(shape);
+            std::vector<tLine> edges = shape.getEdges();
+            for(auto &edge : edges)
+            {
+                window.draw(edge);
+            }
+            std::vector<sf::CircleShape> verts = shape.getVerts();
+            for(auto &vert : verts)
+            {
+                window.draw(vert);
+            }
         }
-        
+        // window.draw(ln);
+
+        // window.draw(rect_shape);
+
         // window.setView(window.getDefaultView());
         window.setView(visibleArea);
 
