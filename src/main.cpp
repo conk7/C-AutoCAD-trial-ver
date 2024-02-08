@@ -39,50 +39,6 @@ void zoomViewAtCenter(sf::View& view, float factor, sf::RenderWindow& window)
     window.setView(view);
 }
 
-void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window)
-{
-    prevMousePos = currMousePos;
-    currMousePos = sf::Mouse::getPosition(window);
-}
-
-// void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow &window, sf::View &view, float zoomDiff, std::stringstream &ss)
-// {
-//     sf::View dummyView = window.getDefaultView();
-// 	const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
-//     // dummyView.setSize(window.getSize().x/zoomDiff, window.getSize().y/zoomDiff);
-//     // dummyView.setCenter(window.getDefaultView().getCenter());
-//     dummyView.zoom(zoomDiff);
-//     window.setView(dummyView);
-//     // const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
-// 	// const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
-//     // dummyView.move(offsetCoords);
-// 	window.setView(dummyView);
-//     view = dummyView;
-//     // ss << "BeforeCoords " << beforeCoord.x << " " << beforeCoord.y << " " << "\n"
-//     // << "AfterCoords " << afterCoord.x << " " << afterCoord.y << " "  << "\n";
-// 	// sf::View view{ window.getView() };
-// 	//view.zoom(zoom);
-// 	//window.setView(view);
-	
-// }
-
-// void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow &window, float zoom, sf::View &visibleArea, std::stringstream &ss)
-// {
-//     const sf::Vector2f beforeCoord{ window.mapPixelToCoords(pixel) };
-// 	sf::View view = visibleArea;
-// 	view.zoom(zoom);
-// 	window.setView(view);
-// 	const sf::Vector2f afterCoord{ window.mapPixelToCoords(pixel) };
-// 	const sf::Vector2f offsetCoords{ beforeCoord - afterCoord };
-// 	view.move(offsetCoords);
-// 	window.setView(view);
-//     visibleArea = view;
-
-
-//     ss << "BeforeCoords " << beforeCoord.x << " " << beforeCoord.y << " " << "\n"
-//     << "AfterCoords " << afterCoord.x << " " << afterCoord.y << " "  << "\n";
-// }
-
 int main()
 
 {
@@ -160,10 +116,10 @@ int main()
     {
         //update view
 // <<<<<<< dev-conk7
-//         view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
-//         visibleArea.setSize(window.getSize().x, window.getSize().y);
-//         visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
-=======
+        // view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
+        visibleArea.setSize(window.getSize().x, window.getSize().y);
+        visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
+// =======
         // view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
         // visibleArea.setSize(window.getSize().x, window.getSize().y);
         // visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
