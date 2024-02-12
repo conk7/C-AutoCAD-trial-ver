@@ -212,22 +212,29 @@ int main()
                 window.create(sf::VideoMode(SCREENW, SCREENH), "52", sf::Style::Fullscreen, sf::ContextSettings(24,8,8));
                 isFullscreen = true;
             }
-            if (event.type == sf::Event::MouseWheelMoved) {
-                  if (event.mouseWheel.delta > 0 && counter < 6) {
-                      counter += 1;
-                      int mouseX = sf::Mouse::getPosition(window).x;
-                      int mouseY = sf::Mouse::getPosition(window).y;
-                      currZoom -= event.mouseWheel.delta * 0.1f;
-                      zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
-                      }
-                  if (event.mouseWheel.delta < 0 && counter > -6) {
-                      counter -= 1;
-                      currZoom += event.mouseWheel.delta * 0.1f;
-                      zoomViewAtCenter(view, 1.1, window);
-                  }
-              }
+            if (event.type == sf::Event::MouseWheelMoved)
+            {
+                if (event.mouseWheel.delta > 0 && counter < 6) 
+                {
+                    if(counter > 6)
+                        counter = 6;
+                    counter += 1;
+                    int mouseX = sf::Mouse::getPosition(window).x;
+                    int mouseY = sf::Mouse::getPosition(window).y;
+                    currZoom -= event.mouseWheel.delta * 0.1f;
+                    zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
+                }
+                if (event.mouseWheel.delta < 0 && counter > -6) 
+                  {
+                    if(counter < -6)
+                        counter = -6;
+                    counter -= 1;
+                    currZoom += event.mouseWheel.delta * 0.1f;
+                    zoomViewAtCenter(view, 1.1, window);
+                }
+            }
 
-            text.setString(ss.str());    
+            // text.setString(ss.str());    
         }
        
 
@@ -249,7 +256,7 @@ int main()
         //render game elements
         window.setView(view);
        
-        grid.draw_axes(window, view, currZoom);
+        grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
         for (auto &shape : shapes)
@@ -273,6 +280,7 @@ int main()
         window.setView(visibleArea);
 
         //render ui
+        text.setString(ss.str());
         window.draw(text);
 
         window.display();
