@@ -230,8 +230,17 @@ int main()
                     zoomView(window, view, mouseX, mouseY, zoomNumber);
                 }
             }
-
-            // text.setString(ss.str());    
+            if (event.type == sf::Event::Resized)
+            {
+                sf::View newView;
+                newView.setSize(window.getSize().x, window.getSize().y);
+                if(counter > 0)
+                    newView.zoom(pow(1/zoomNumber,counter));
+                else if(counter < 0)
+                    newView.zoom(pow(zoomNumber,-counter));
+                newView.setCenter(view.getCenter());
+                view = newView;
+            }  
         }
        
 
