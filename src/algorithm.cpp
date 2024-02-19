@@ -11,7 +11,8 @@ Point::Point(float x1, float y1)
     this->x = x1;
     this->y = y1;
 }
-Point::Point() {
+Point::Point() 
+{
     x = 0;
     y = 0;
 }

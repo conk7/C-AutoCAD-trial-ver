@@ -18,6 +18,25 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 
 }
 
+void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points)
+{
+    if(points.size() == 0)
+        return;
+    
+    float radius = 5;
+
+    for (auto &point : points)
+    {
+        sf::CircleShape circle(radius);
+        float x = point.get_x();
+        float y = point.get_y();
+        circle.setPosition(sf::Vector2f(x, y));
+        circle.setFillColor(sf::Color::Blue);
+        window.draw(circle);
+    }
+
+}
+
 void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window, sf::View& view) 
 {
     prevMousePos = currMousePos;
@@ -103,6 +122,9 @@ int main()
     const float zoomNumber = 1.05;
 
     std::vector<sf::CircleShape> toDraw;
+
+    //intersectionArea
+    std::vector<Point> intersectionAreaPoints;
 
     //main loop
     while (window.isOpen())
@@ -246,7 +268,19 @@ int main()
             }  
         }
        
-
+        // Calling Alexey's function
+        if (shapes.size() == 2 && shapes[1].isFinished())
+        {
+            auto fig1 = shapes[0].getVertsCoords();
+            auto fig2 = shapes[1].getVertsCoords();
+            intersectionAreaPoints = The_area_of_intersection(fig1, fig2);
+            // drawIntersectionArea(window, intersectionAreaPoints);
+        }
+        else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
+        {
+            auto fig = shapes[shapes.size()-1].getVertsCoords();
+            intersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
+        }
         // sf::Vector2i negmousePosGrid;
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
@@ -281,6 +315,8 @@ int main()
                 window.draw(vert);
             }
         }
+
+        drawIntersectionArea(window, intersectionAreaPoints);
         // window.draw(ln);
 
         // window.draw(rect_shape);
