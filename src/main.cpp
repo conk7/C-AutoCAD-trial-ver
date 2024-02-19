@@ -177,18 +177,21 @@ int main()
                     Shape shape(3);
                     shape.addVert(currMousePosView, grid);
                     shapes.push_back(shape);
+                    isMouseButtonPressed = false;
                 }
                 else if (shapes.size() != 0 && !shapes[shapes.size() - 1].isFinished())
                 {
                     shapes[shapes.size() - 1].addVert(currMousePosView, grid);
                     auto edges = shapes[shapes.size() - 1].getEdges();
                     ss << edges.size();
+                    isMouseButtonPressed = false;
                 }
                 else if (shapes.size() != 0 && shapes[shapes.size() - 1].isFinished())
                 {
                     Shape shape(3);
                     shape.addVert(currMousePosView, grid);
                     shapes.push_back(shape);
+                    isMouseButtonPressed = false;
                 }
                 // else
                 // {
