@@ -18,29 +18,25 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 
 }
 
-void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window)
+void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window, sf::View& view) 
 {
     prevMousePos = currMousePos;
     currMousePos = sf::Mouse::getPosition(window);
+    // auto tmpPos = sf::Mouse::getPosition();
+    // currMousePos = window.mapCoordsToPixel(sf::Vector2f(static_cast<float>(tmpPos.x), static_cast<float>(tmpPos.y)), view);
 }
 
-void zoomViewAtMouse(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float scale) {
-    sf::Vector2f viewCenter = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-    view.setCenter(viewCenter);
-    view.zoom(scale);
-    window.setView(view);
-}
-
-void zoomViewAtCenter(sf::View& view, float factor, sf::RenderWindow& window)
+void zoomView(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float scale)
 {
-    sf::Vector2f viewSize = view.getSize();
-    sf::Vector2f viewCenter = view.getCenter();
-    view.zoom(factor);
+    sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+    view.zoom(scale);
+    sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+    const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
+    view.move(offsetCoords);
     window.setView(view);
 }
 
 int main()
-
 {
     //default window width and height
     const uint16_t SCREENW = 1920;
@@ -105,9 +101,8 @@ int main()
     std::vector<Shape> shapes;
 
     //zoom
-    const float zoomDiff = 0.01;
-    float currZoom = 1;
     int counter = 0; 
+    const float zoomNumber = 1.05;
 
     std::vector<sf::CircleShape> toDraw;
 
@@ -133,7 +128,7 @@ int main()
 
         //update mouse pos
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
-        updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window);
+        updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
 
         if(shapes.size() > 0)
         {
@@ -170,13 +165,13 @@ int main()
             {
                 isMouseButtonPressed = false;
                 view.move((prevMousePosWindow.x - currMousePosWindow.x), 
-                            (prevMousePosWindow.y - currMousePosWindow.y));
+                          (prevMousePosWindow.y - currMousePosWindow.y));
             }
             else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = true;
             }
-            if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased)
+            if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased) //triggers on any mouse button
             {
 
                 if(shapes.size() == 0)
@@ -214,23 +209,27 @@ int main()
             }
             if (event.type == sf::Event::MouseWheelMoved)
             {
-                if (event.mouseWheel.delta > 0 && counter < 6) 
+                if (event.mouseWheel.delta > 0 && counter < 24) 
                 {
-                    if(counter > 6)
-                        counter = 6;
+                    if(counter > 24)
+                        counter = 24;
                     counter += 1;
                     int mouseX = sf::Mouse::getPosition(window).x;
                     int mouseY = sf::Mouse::getPosition(window).y;
-                    currZoom -= event.mouseWheel.delta * 0.1f;
-                    zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
+                    // currZoom -= event.mouseWheel.delta * 0.1f;
+                    // zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
+                    zoomView(window, view, mouseX, mouseY, 1/zoomNumber);
                 }
-                if (event.mouseWheel.delta < 0 && counter > -6) 
+                if (event.mouseWheel.delta < 0 && counter > -24) 
                   {
-                    if(counter < -6)
-                        counter = -6;
+                    if(counter < -24)
+                        counter = -24;
                     counter -= 1;
-                    currZoom += event.mouseWheel.delta * 0.1f;
-                    zoomViewAtCenter(view, 1.1, window);
+                    // currZoom += event.mouseWheel.delta * 0.1f;
+                    int mouseX = sf::Mouse::getPosition(window).x;
+                    int mouseY = sf::Mouse::getPosition(window).y;
+                    // zoomViewAtCenter(view, 1.1, window);
+                    zoomView(window, view, mouseX, mouseY, zoomNumber);
                 }
             }
 

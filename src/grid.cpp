@@ -19,7 +19,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &
 {
     sf::Vector2f viewCenter = view.getCenter();
     sf::Vector2f viewSize = view.getSize();
-    float zoomFactor = pow(1.1, static_cast<float>(counter));
+    float zoomFactor = pow(1.02, static_cast<float>(counter));
     float viewLeftBorder = viewCenter.x - (viewSize.x / 2);
     float gridLeftBorder = floor(viewLeftBorder / gridSizeU) * gridSizeU;
     float viewRightBorder = viewCenter.x + (viewSize.x / 2);
@@ -27,7 +27,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &
     float viewTopBorder = viewCenter.y - (viewSize.y / 2);
     float gridTopBorder = ceil(viewTopBorder / gridSizeU) * gridSizeU;
     float viewBottomBorder = viewCenter.y + (viewSize.y / 2);
-    float gridBottomBorder = floor(viewBottomBorder / gridSizeU) * gridSizeU;
+    float gridBottomBorder = (floor(viewBottomBorder / gridSizeU) * gridSizeU) + gridSizeU;
     
     float gridIdx = gridLeftBorder;
     while (gridIdx < gridRightBorder)
@@ -41,7 +41,6 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &
     }
     
     ss << zoomFactor << ' ' << counter <<  '\n';
-
 
     gridIdx = gridBottomBorder;
     while (gridIdx >= gridTopBorder)

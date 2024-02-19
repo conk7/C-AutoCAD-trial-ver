@@ -19,4 +19,6 @@ public:
     void updatePointB(const sf::Vector2f &pointB);
     sf::Vector2f getPointA() const;
     sf::Vector2f getPointB() const;
+    void setPointA(sf::Vector2f pos);
+    void setPointB(sf::Vector2f pos);
 };
