@@ -22,8 +22,6 @@ void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos
 {
     prevMousePos = currMousePos;
     currMousePos = sf::Mouse::getPosition(window);
-    // auto tmpPos = sf::Mouse::getPosition();
-    // currMousePos = window.mapCoordsToPixel(sf::Vector2f(static_cast<float>(tmpPos.x), static_cast<float>(tmpPos.y)), view);
 }
 
 void zoomView(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float scale)
@@ -164,8 +162,8 @@ int main()
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
-                view.move((prevMousePosWindow.x - currMousePosWindow.x), 
-                          (prevMousePosWindow.y - currMousePosWindow.y));
+                view.move((prevMousePosWindow.x - currMousePosWindow.x) * pow(1/zoomNumber, counter), 
+                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(1/zoomNumber, counter));
             }
             else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
