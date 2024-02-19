@@ -175,19 +175,19 @@ int main()
                 if(shapes.size() == 0)
                 {
                     Shape shape(3);
-                    shape.addVert(currMousePosView);
+                    shape.addVert(currMousePosView, grid);
                     shapes.push_back(shape);
                 }
                 else if (shapes.size() != 0 && !shapes[shapes.size() - 1].isFinished())
                 {
-                    shapes[shapes.size() - 1].addVert(currMousePosView);
+                    shapes[shapes.size() - 1].addVert(currMousePosView, grid);
                     auto edges = shapes[shapes.size() - 1].getEdges();
                     ss << edges.size();
                 }
                 else if (shapes.size() != 0 && shapes[shapes.size() - 1].isFinished())
                 {
                     Shape shape(3);
-                    shape.addVert(currMousePosView);
+                    shape.addVert(currMousePosView, grid);
                     shapes.push_back(shape);
                 }
                 // else

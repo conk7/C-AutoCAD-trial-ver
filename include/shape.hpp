@@ -4,6 +4,7 @@
 #include <math.h>
 #include "..\include\line.hpp"
 #include "..\include\algorithm.hpp"
+#include "..\include\grid.hpp"
 
 class Shape
 {
@@ -15,7 +16,7 @@ private:
     std::vector<sf::CircleShape> verts;
 public:
     Shape(unsigned vertCount);
-    void addVert(sf::Vector2i coords);
+    void addVert(sf::Vector2i coords, Grid grid);
     // void delVert();
     void updateDE(sf::Vector2i coords);
     std::vector<tLine> getEdges() const;

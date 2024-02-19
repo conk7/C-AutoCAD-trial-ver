@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "..\include\shape.hpp"
 #include "..\include\line.hpp"
-#include <math.h>
+#include <cmath>
 
 Shape::Shape(unsigned const vertCount = 3)
 {
@@ -12,8 +12,12 @@ Shape::Shape(unsigned const vertCount = 3)
     finished = true;
 }
 
-void Shape::addVert(sf::Vector2i coords)
+void Shape::addVert(sf::Vector2i coords, Grid grid)
 {
+    float gridSizeF = grid.getGridSizeF();
+    int gridSize = grid.getGridSizeU();
+    sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
+    coords = sf::Vector2i(round(coordsF.x / gridSizeF) * gridSize, round(coordsF.y / gridSizeF) * gridSize);
     if(verts.size() == 0)
     {
         float radius = 5;
@@ -22,7 +26,7 @@ void Shape::addVert(sf::Vector2i coords)
         circle.setFillColor(sf::Color::Red);
         verts.push_back(circle);
 
-        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x+5, coords.y+5), sf::Color::Black, 5.f);
+        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x + radius, coords.y + radius), sf::Color::Black, 5.f);
         edges.push_back(edge);
         finished = false;
         dynamicEdge = true;
