@@ -5,9 +5,55 @@
 #include "..\include\shape.hpp"
 #include "..\include\line.hpp"
 #include "..\include\isOnVerts.hpp"
-#include <math.h>
+#include <cmath>
 
 static float constexpr EPS = 1e-4;
+
+void findIntersectionArea(std::vector<Shape> &shapes, 
+                        std::vector<Point> &intersectionAreaPoints, 
+                        bool &redrawIntersectionArea,
+                        std::stringstream &ss)
+{
+    if (shapes.size() == 2 && shapes[1].isFinished())
+    {
+        auto fig1 = shapes[0].getVertsCoords();
+        auto fig2 = shapes[1].getVertsCoords();
+        intersectionAreaPoints = The_area_of_intersection(fig1, fig2);
+        redrawIntersectionArea = true;
+    }
+    else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
+    {
+        auto fig = shapes[shapes.size()-1].getVertsCoords();
+        auto newIntersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
+
+        bool equals = false;
+        for (int i = 0; i < newIntersectionAreaPoints.size(); i++)
+        {
+            equals = false;
+            for (int j = 0; j < intersectionAreaPoints.size(); j++)
+            {
+                if((fabs(newIntersectionAreaPoints[i].get_x() - intersectionAreaPoints[j].get_x())) < EPS ||
+                fabs(newIntersectionAreaPoints[i].get_y() - intersectionAreaPoints[j].get_y()) < EPS)
+                {
+                    equals = true;
+                }
+            }
+            if(!equals)
+                break;
+        }
+
+        if(equals)
+            return;
+        else
+        {
+            intersectionAreaPoints = newIntersectionAreaPoints;
+            redrawIntersectionArea = true;
+            ss << "size " << newIntersectionAreaPoints.size() << " "
+            << intersectionAreaPoints.size() << "\n";   
+        }
+    }
+}
+
 
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
 {
@@ -339,35 +385,9 @@ int main()
         }
        
         // Calling Alexey's function
-        if (shapes.size() == 2 && shapes[1].isFinished())
-        {
-            auto fig1 = shapes[0].getVertsCoords();
-            auto fig2 = shapes[1].getVertsCoords();
-            intersectionAreaPoints = The_area_of_intersection(fig1, fig2);
-            redrawIntersectionArea = true;
-        }
-        else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
-        {
-            auto fig = shapes[shapes.size()-1].getVertsCoords();
-            auto newIntersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
-            if(newIntersectionAreaPoints.size() != 0)
-            {
-                for (int i = 0; i < std::min(newIntersectionAreaPoints.size(), intersectionAreaPoints.size()); i++)
-                {
-                    if((newIntersectionAreaPoints[i].get_x() != intersectionAreaPoints[i].get_x()) ||
-                        newIntersectionAreaPoints[i].get_y() != intersectionAreaPoints[i].get_y())
-                    {
-                        intersectionAreaPoints = newIntersectionAreaPoints;
-                        redrawIntersectionArea = true;
-                        ss << "size " << newIntersectionAreaPoints.size() << " "
-                        << intersectionAreaPoints.size() << "\n";
-                        break;              
-                    }
-                }
-            }
-            // intersectionAreaPoints = newIntersectionAreaPoints; 
-        }
-        // sf::Vector2i negmousePosGrid;
+        findIntersectionArea(shapes, intersectionAreaPoints, redrawIntersectionArea, ss);
+
+
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 
@@ -376,9 +396,8 @@ int main()
 
         //render begins
         window.clear();
-        // sf::View visibleArea (sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-        // visibleArea.setSize(sf::Vector2f(1920/2, 1080/2));
-        // visibleArea.zoom(2);
+
+        
         window.setView(visibleArea);
         window.draw(background);
         
@@ -427,18 +446,8 @@ int main()
         //     window.draw(hitbox);
         // }
         
-
-        
-
         // ss << "GLOBAL BOUNDS "<< tmp.getPosition() << "\n";
-        
-        //draw blue vers was here
-            
-        // window.draw(ln);
 
-        // window.draw(rect_shape);
-
-        // window.setView(window.getDefaultView());
         window.setView(visibleArea);
 
         //render ui
