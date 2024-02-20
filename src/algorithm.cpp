@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include "..\include\algorithm.hpp"
-static float EPS = 1e-4;
+static float constexpr EPS = 1e-4;
 
 Point::Point(float x1, float y1)
 {
@@ -164,9 +164,39 @@ std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector
 {
     if (fig1.size() == 0 || fig2.size() == 0)
     {
-        std::vector<Point> a;
-        return a;
+        // std::vector<Point> a(0);
+        return fig1;
     }
+    // bool flag = true;
+    // for (int i = 0; i < std::min(fig1.size(), fig2.size()); i++)
+    // {
+    //     if((fabs(fig1[i].get_x() - fig2[i].get_x())) > EPS ||
+    //         fabs(fig1[i].get_y() - fig2[i].get_y()) > EPS)
+    //     {
+    //         // std::vector<Point> a;
+    //         flag = false;
+    //     }
+    // }
+    bool equals = false;
+    for (int i = 0; i < fig1.size(); i++)
+    {
+        equals = false;
+        for (int j = 0; j < fig2.size(); j++)
+        {
+            if((fabs(fig1[i].get_x() - fig2[j].get_x())) < EPS ||
+            fabs(fig1[i].get_y() - fig2[j].get_y()) < EPS)
+            {
+                equals = true;
+            }
+        }
+        if(!equals)
+            break;
+        
+    }
+
+    if(equals)
+        return fig1;
+
     std::vector<Point> points;
     for (auto it : fig2)
     {

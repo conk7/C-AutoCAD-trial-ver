@@ -7,6 +7,8 @@
 #include "..\include\isOnVerts.hpp"
 #include <math.h>
 
+static float constexpr EPS = 1e-4;
+
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
 {
     prevMousePos = currMousePos;
@@ -38,7 +40,7 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 
 // }
 
-void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, std::vector<Shape> &shapes)
+void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, std::vector<sf::CircleShape> &newPoints, std::vector<Shape> &shapes)
 {
     float constexpr EPS = 10;
 
@@ -62,22 +64,35 @@ void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, s
         auto verts = shape.getVerts();
         for(auto &vert : verts)
         {
-            for(auto &point : points)
+            for (int i = points.size() - 1; i >= 0; i--)       
             {
-                float const pointX = point.get_x();
-                float const pointY = point.get_y();
+                float const pointX = points[i].get_x();
+                float const pointY = points[i].get_y();
 
                 float const vertX = vert.getPosition().x;
                 float const vertY = vert.getPosition().y;
 
                 if(fabs(pointX - vertX) < EPS && fabs(pointY - vertY) < EPS)
                 {
-                vert.setFillColor(sf::Color::Blue);
+                    vert.setFillColor(sf::Color::Blue);
+                    points.erase(points.begin() + i);
                 }
+                
             }
             
         }
         shape.setVerts(verts);
+    }
+
+    newPoints.clear();
+    for(auto &point : points)
+    {
+        sf::CircleShape circle(radius);
+        float x = point.get_x();
+        float y = point.get_y();
+        circle.setPosition(sf::Vector2f(x, y));
+        circle.setFillColor(sf::Color::Blue);
+        newPoints.push_back(circle);
     }
 
 }
@@ -170,6 +185,7 @@ int main()
 
     //intersectionArea
     std::vector<Point> intersectionAreaPoints;
+    std::vector<sf::CircleShape> newPoints;
 
     bool redrawIntersectionArea = false;
 
@@ -333,8 +349,23 @@ int main()
         else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
         {
             auto fig = shapes[shapes.size()-1].getVertsCoords();
-            intersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
-            redrawIntersectionArea = true;
+            auto newIntersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
+            if(newIntersectionAreaPoints.size() != 0)
+            {
+                for (int i = 0; i < std::min(newIntersectionAreaPoints.size(), intersectionAreaPoints.size()); i++)
+                {
+                    if((newIntersectionAreaPoints[i].get_x() != intersectionAreaPoints[i].get_x()) ||
+                        newIntersectionAreaPoints[i].get_y() != intersectionAreaPoints[i].get_y())
+                    {
+                        intersectionAreaPoints = newIntersectionAreaPoints;
+                        redrawIntersectionArea = true;
+                        ss << "size " << newIntersectionAreaPoints.size() << " "
+                        << intersectionAreaPoints.size() << "\n";
+                        break;              
+                    }
+                }
+            }
+            // intersectionAreaPoints = newIntersectionAreaPoints; 
         }
         // sf::Vector2i negmousePosGrid;
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
@@ -357,11 +388,11 @@ int main()
         grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
-        // if(redrawIntersectionArea)
-        // {
-            drawIntersectionArea(window, intersectionAreaPoints, shapes);
-            // redrawIntersectionArea = false;
-        // }
+        if(redrawIntersectionArea)
+        {
+            drawIntersectionArea(window, intersectionAreaPoints, newPoints, shapes);
+            redrawIntersectionArea = false;
+        }
 
         for (auto &shape : shapes)
         {
@@ -376,6 +407,11 @@ int main()
                 window.draw(vert);
 
             }
+        }
+
+        for(auto &point : newPoints)
+        {
+            window.draw(point);
         }
 
         // if (shapes.size() > 1 && shapes[0].isFinished())
