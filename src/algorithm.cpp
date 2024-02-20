@@ -167,16 +167,7 @@ std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector
         // std::vector<Point> a(0);
         return fig1;
     }
-    // bool flag = true;
-    // for (int i = 0; i < std::min(fig1.size(), fig2.size()); i++)
-    // {
-    //     if((fabs(fig1[i].get_x() - fig2[i].get_x())) > EPS ||
-    //         fabs(fig1[i].get_y() - fig2[i].get_y()) > EPS)
-    //     {
-    //         // std::vector<Point> a;
-    //         flag = false;
-    //     }
-    // }
+
     bool equals = false;
     for (int i = 0; i < fig1.size(); i++)
     {
@@ -191,7 +182,6 @@ std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector
         }
         if(!equals)
             break;
-        
     }
 
     if(equals)

@@ -9,6 +9,32 @@
 
 static float constexpr EPS = 1e-4;
 
+void drawIntersectionPoints(std::vector<sf::CircleShape> &newIntersectionPoints, sf::RenderWindow &window)
+{
+    for(auto &point : newIntersectionPoints)
+    {
+        window.draw(point);
+    }
+}
+
+void drawShapes(std::vector<Shape> &shapes, sf::RenderWindow &window)
+{
+    for (auto &shape : shapes)
+    {
+        std::vector<tLine> edges = shape.getEdges();
+        for(auto &edge : edges)
+        {
+            window.draw(edge);
+        }
+        std::vector<sf::CircleShape> verts = shape.getVerts();
+        for(auto &vert : verts)
+        {
+            window.draw(vert);
+
+        }
+    }
+}
+
 void findIntersectionArea(std::vector<Shape> &shapes, 
                         std::vector<Point> &intersectionAreaPoints, 
                         bool &redrawIntersectionArea,
@@ -54,7 +80,6 @@ void findIntersectionArea(std::vector<Shape> &shapes,
     }
 }
 
-
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
 {
     prevMousePos = currMousePos;
@@ -67,26 +92,10 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 
 }
 
-// void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points)
-// {
-//     if(points.size() == 0)
-//         return;
-    
-//     float radius = 5;
-
-//     for (auto &point : points)
-//     {
-//         sf::CircleShape circle(radius);
-//         float x = point.get_x();
-//         float y = point.get_y();
-//         circle.setPosition(sf::Vector2f(x, y));
-//         circle.setFillColor(sf::Color::Blue);
-//         window.draw(circle);
-//     }
-
-// }
-
-void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, std::vector<sf::CircleShape> &newPoints, std::vector<Shape> &shapes)
+void drawIntersectionArea(sf::RenderWindow &window, 
+                        std::vector<Point> points, 
+                        std::vector<sf::CircleShape> &newIntersectionPoints, 
+                        std::vector<Shape> &shapes)
 {
     float constexpr EPS = 10;
 
@@ -123,14 +132,12 @@ void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, s
                     vert.setFillColor(sf::Color::Blue);
                     points.erase(points.begin() + i);
                 }
-                
             }
-            
         }
         shape.setVerts(verts);
     }
 
-    newPoints.clear();
+    newIntersectionPoints.clear();
     for(auto &point : points)
     {
         sf::CircleShape circle(radius);
@@ -138,7 +145,7 @@ void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, s
         float y = point.get_y();
         circle.setPosition(sf::Vector2f(x, y));
         circle.setFillColor(sf::Color::Blue);
-        newPoints.push_back(circle);
+        newIntersectionPoints.push_back(circle);
     }
 
 }
@@ -221,17 +228,18 @@ int main()
     tileSelector.setOutlineColor(sf::Color::Blue);
     tileSelector.setOutlineThickness(3);
   
+
+    //vector of all triangles (polygons)
     std::vector<Shape> shapes;
 
     //zoom
     int counter = 0; 
-    const float zoomNumber = 1.05;
+    const float zoomFactor = 1.05;
 
-    std::vector<sf::CircleShape> toDraw;
 
     //intersectionArea
     std::vector<Point> intersectionAreaPoints;
-    std::vector<sf::CircleShape> newPoints;
+    std::vector<sf::CircleShape> newIntersectionPoints;
 
     bool redrawIntersectionArea = false;
 
@@ -239,15 +247,8 @@ int main()
     while (window.isOpen())
     {
         //update view
-// <<<<<<< dev-conk7
-        // view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
         visibleArea.setSize(window.getSize().x, window.getSize().y);
         visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
-// =======
-        // view.setSize(window.getSize().x/currZoom, window.getSize().y/currZoom);
-        // visibleArea.setSize(window.getSize().x, window.getSize().y);
-        // visibleArea.setCenter(static_cast<float>(window.getSize().x/2), static_cast<float>(window.getSize().y/2));
-// >>>>>>> Pablo-
 
         //update bg
         background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), 
@@ -270,9 +271,7 @@ int main()
         mousePosWindow = sf::Mouse::getPosition(window);
         window.setView(view);
         mousePosView = window.mapPixelToCoords(mousePosWindow);
-        // if(mousePosView.x >= 0.f)
         mousePosGrid.x = mousePosView.x / grid.getGridSizeU();
-        // if(mousePosView.y >= 0.f)
         mousePosGrid.y = mousePosView.y / grid.getGridSizeU();
         window.setView(window.getDefaultView());
 
@@ -289,7 +288,6 @@ int main()
         isOnVerts(currMousePosView, shapes, ss);
 
 
-
         //event loop
         sf::Event event;
         while (window.pollEvent(event))
@@ -300,8 +298,8 @@ int main()
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
-                view.move((prevMousePosWindow.x - currMousePosWindow.x) * pow(1/zoomNumber, counter), 
-                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(1/zoomNumber, counter));
+                view.move((prevMousePosWindow.x - currMousePosWindow.x) * pow(1/zoomFactor, counter), 
+                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(1/zoomFactor, counter));
             }
             else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
@@ -331,10 +329,6 @@ int main()
                     shapes.push_back(shape);
                     isMouseButtonPressed = false;
                 }
-                // else
-                // {
-                //     shapes[shapes.size() - 1].addVert(currMousePosView);
-                // }
             }
             if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
             {
@@ -353,22 +347,16 @@ int main()
                     if(counter > 24)
                         counter = 24;
                     counter += 1;
-                    int mouseX = sf::Mouse::getPosition(window).x;
-                    int mouseY = sf::Mouse::getPosition(window).y;
-                    // currZoom -= event.mouseWheel.delta * 0.1f;
-                    // zoomViewAtMouse(window, view, mouseX, mouseY, 1/1.1);
-                    zoomView(window, view, mouseX, mouseY, 1/zoomNumber);
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                    zoomView(window, view, mousePos.x, mousePos.y, 1/zoomFactor);
                 }
                 if (event.mouseWheel.delta < 0 && counter > -24) 
                   {
                     if(counter < -24)
                         counter = -24;
                     counter -= 1;
-                    // currZoom += event.mouseWheel.delta * 0.1f;
-                    int mouseX = sf::Mouse::getPosition(window).x;
-                    int mouseY = sf::Mouse::getPosition(window).y;
-                    // zoomViewAtCenter(view, 1.1, window);
-                    zoomView(window, view, mouseX, mouseY, zoomNumber);
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                    zoomView(window, view, mousePos.x, mousePos.y, zoomFactor);
                 }
             }
             if (event.type == sf::Event::Resized)
@@ -376,9 +364,9 @@ int main()
                 sf::View newView;
                 newView.setSize(window.getSize().x, window.getSize().y);
                 if(counter > 0)
-                    newView.zoom(pow(1/zoomNumber,counter));
+                    newView.zoom(pow(1/zoomFactor,counter));
                 else if(counter < 0)
-                    newView.zoom(pow(zoomNumber,-counter));
+                    newView.zoom(pow(zoomFactor,-counter));
                 newView.setCenter(view.getCenter());
                 view = newView;
             }  
@@ -397,7 +385,7 @@ int main()
         //render begins
         window.clear();
 
-        
+        //bg
         window.setView(visibleArea);
         window.draw(background);
         
@@ -409,29 +397,13 @@ int main()
 
         if(redrawIntersectionArea)
         {
-            drawIntersectionArea(window, intersectionAreaPoints, newPoints, shapes);
+            drawIntersectionArea(window, intersectionAreaPoints, newIntersectionPoints, shapes);
             redrawIntersectionArea = false;
         }
 
-        for (auto &shape : shapes)
-        {
-            std::vector<tLine> edges = shape.getEdges();
-            for(auto &edge : edges)
-            {
-                window.draw(edge);
-            }
-            std::vector<sf::CircleShape> verts = shape.getVerts();
-            for(auto &vert : verts)
-            {
-                window.draw(vert);
+        drawShapes(shapes, window);
+        drawIntersectionPoints(newIntersectionPoints, window);
 
-            }
-        }
-
-        for(auto &point : newPoints)
-        {
-            window.draw(point);
-        }
 
         // if (shapes.size() > 1 && shapes[0].isFinished())
         // {
