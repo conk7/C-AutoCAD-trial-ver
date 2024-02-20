@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include "..\include\algorithm.hpp"
-static float EPS = 1e-9;
+static float EPS = 1e-4;
 
 Point::Point(float x1, float y1)
 {
@@ -45,57 +45,44 @@ void Point::setY(float y)
 
 float angle(Point a)
 {
-    return (a.get_y() - P.get_y()) / sqrt(pow(a.get_x() - P.get_x(), 2) + pow(a.get_y() - P.get_y(), 2));
+    return (a.get_y() - P.get_y()) / sqrtf(pow(a.get_x() - P.get_x(), 2) + pow(a.get_y() - P.get_y(), 2));
 }
 bool f(Point a, Point b)
 {
     if (angle(a) < angle(b)) return true;
     return false;
 }
-std::vector<Point> convex_hull(std::vector<Point>& points) //выпуклая оболочка
-{
+std::vector<Point> convex_hull(std::vector<Point> points) 
+{ 
     int n = points.size();
-    Point minr = Point(1e10, 0);
-    std::set<std::pair<float, float>> b;
-    for (int i = 0; i < n; i++)
-    {
-        b.insert({ points[i].get_x(), points[i].get_y()});
-        if (points[i].get_x() < minr.get_x()) {
-            minr = points[i];
-        }
-    }
-    P = minr;
-    n = b.size();
     std::vector<Point>a(n);
-    int count = 1;
-    for (auto& it : b)
+    if (n == 0)
     {
-        if (it.first != minr.get_x() || it.second != minr.get_y())
-        {
-            a[count] = Point(it.first, it.second);
-            count++;
-        }
-    }
-    a[0] = minr;
-    auto it = a.begin();
-    it++;
-    sort(it, a.end(), f);
-    a.push_back(minr);
-    n = a.size();
-    std::vector<Point> st;
-    st.push_back(a[0]);
-    st.push_back(a[1]);
-    std::vector<Point>obol;
-    obol.push_back(minr);
-    for (int i = 2; i < n; i++)
-    {
-        while (st.size() >= 2 && ((st[st.size() - 1].get_x() - st[st.size() - 2].get_x()) * (a[i].get_y() - st[st.size() - 1].get_y()) - (st[st.size() - 1].get_y() - st[st.size() - 2].get_y()) * (a[i].get_x() - st[st.size() - 1].get_x()) < 0))
-        {
-            st.pop_back();
-        }
-        st.push_back(a[i]);
-    }
-    return st;
+        return a;
+    }  
+    Point minr = Point(1e10, 0); 
+    for (int i = 0; i < n; i++) 
+    { 
+        if (points[i].get_x() < minr.get_x()) 
+        { 
+            minr = points[i]; 
+        } 
+    } 
+    P = minr;
+    int count = 1; 
+    for (auto it : points) 
+    { 
+        if (fabs(it.get_x() - minr.get_x())>EPS || fabs(it.get_y() - minr.get_y())>EPS) 
+        { 
+            a[count] = Point(it.get_x(), it.get_y()); 
+            count++; 
+        } 
+    } 
+    a[0] = minr; 
+    auto it = a.begin(); 
+    it++; 
+    sort(it, a.end(), f); 
+    return a; 
 }
 bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res) //peresechenie otrezkov
 {
@@ -141,7 +128,7 @@ bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::ve
     }
     return false;
 }
-bool is_inside(std::vector<Point>& fig, Point p)
+bool is_inside(std::vector<Point> fig, Point p)
 {
     Vector prev = Point( fig[0].get_x() - p.get_x(), fig[0].get_y() - p.get_y() );
     float det_prev = 0;
@@ -150,31 +137,45 @@ bool is_inside(std::vector<Point>& fig, Point p)
     {
         Vector tek = Point( fig[i].get_x() - p.get_x(), fig[i].get_y() - p.get_y() );
         float det_tek = tek.get_x() * prev.get_y() - tek.get_y() * prev.get_x();
-        if (det_prev != 0 && det_tek != 0)
+        if (det_tek != 0 &&  det_prev != 0)
         {
             if (sign(det_prev) != sign(det_tek))
             {
                 fig.pop_back();
                 return false;
             }
+            det_prev = det_tek;
+            prev = tek;
         }
-        det_prev = det_tek;
-        prev = tek;
+        else if (det_prev == 0)
+        {
+            det_prev = det_tek;
+            prev = tek;
+        }
+        else
+        {
+            prev = tek;
+        }        
     }
     fig.pop_back();
     return true;
 }
 std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector<Point> fig2)
 {
+    if (fig1.size() == 0 || fig2.size() == 0)
+    {
+        std::vector<Point> a;
+        return a;
+    }
     std::vector<Point> points;
-    for (auto& it : fig2)
+    for (auto it : fig2)
     {
         if (is_inside(fig1, it))
         {
             points.push_back(it); 
         }
     }
-    for (auto& it : fig1)
+    for (auto it : fig1)
     {
         if (is_inside(fig2, it)) 
         { 
@@ -193,6 +194,5 @@ std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector
         }
     }
     points = convex_hull(points);
-    points.pop_back();
     return points;
 }

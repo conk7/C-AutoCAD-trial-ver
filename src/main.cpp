@@ -4,6 +4,7 @@
 #include "..\include\grid.hpp"
 #include "..\include\shape.hpp"
 #include "..\include\line.hpp"
+#include "..\include\isOnVerts.hpp"
 #include <math.h>
 
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
@@ -18,21 +19,65 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 
 }
 
-void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points)
+// void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points)
+// {
+//     if(points.size() == 0)
+//         return;
+    
+//     float radius = 5;
+
+//     for (auto &point : points)
+//     {
+//         sf::CircleShape circle(radius);
+//         float x = point.get_x();
+//         float y = point.get_y();
+//         circle.setPosition(sf::Vector2f(x, y));
+//         circle.setFillColor(sf::Color::Blue);
+//         window.draw(circle);
+//     }
+
+// }
+
+void drawIntersectionArea(sf::RenderWindow &window, std::vector<Point> points, std::vector<Shape> &shapes)
 {
+    float constexpr EPS = 10;
+
     if(points.size() == 0)
         return;
     
     float radius = 5;
 
-    for (auto &point : points)
+    for(auto &shape : shapes)
     {
-        sf::CircleShape circle(radius);
-        float x = point.get_x();
-        float y = point.get_y();
-        circle.setPosition(sf::Vector2f(x, y));
-        circle.setFillColor(sf::Color::Blue);
-        window.draw(circle);
+        auto verts = shape.getVerts();
+        for(auto &vert : verts)
+        {
+            vert.setFillColor(sf::Color::Red);  
+        }
+        shape.setVerts(verts);
+    }
+
+    for(auto &shape : shapes)
+    {
+        auto verts = shape.getVerts();
+        for(auto &vert : verts)
+        {
+            for(auto &point : points)
+            {
+                float const pointX = point.get_x();
+                float const pointY = point.get_y();
+
+                float const vertX = vert.getPosition().x;
+                float const vertY = vert.getPosition().y;
+
+                if(fabs(pointX - vertX) < EPS && fabs(pointY - vertY) < EPS)
+                {
+                vert.setFillColor(sf::Color::Blue);
+                }
+            }
+            
+        }
+        shape.setVerts(verts);
     }
 
 }
@@ -126,6 +171,8 @@ int main()
     //intersectionArea
     std::vector<Point> intersectionAreaPoints;
 
+    bool redrawIntersectionArea = false;
+
     //main loop
     while (window.isOpen())
     {
@@ -150,6 +197,8 @@ int main()
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
         updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
 
+        
+
         if(shapes.size() > 0)
         {
             shapes[shapes.size() - 1].updateDE(currMousePosView);
@@ -173,6 +222,11 @@ int main()
             << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
             << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
         // text.setString(ss.str());
+
+
+        isOnVerts(currMousePosView, shapes, ss);
+
+
 
         //event loop
         sf::Event event;
@@ -274,12 +328,13 @@ int main()
             auto fig1 = shapes[0].getVertsCoords();
             auto fig2 = shapes[1].getVertsCoords();
             intersectionAreaPoints = The_area_of_intersection(fig1, fig2);
-            // drawIntersectionArea(window, intersectionAreaPoints);
+            redrawIntersectionArea = true;
         }
         else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
         {
             auto fig = shapes[shapes.size()-1].getVertsCoords();
             intersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
+            redrawIntersectionArea = true;
         }
         // sf::Vector2i negmousePosGrid;
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
@@ -302,6 +357,12 @@ int main()
         grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
+        // if(redrawIntersectionArea)
+        // {
+            drawIntersectionArea(window, intersectionAreaPoints, shapes);
+            // redrawIntersectionArea = false;
+        // }
+
         for (auto &shape : shapes)
         {
             std::vector<tLine> edges = shape.getEdges();
@@ -313,10 +374,30 @@ int main()
             for(auto &vert : verts)
             {
                 window.draw(vert);
+
             }
         }
 
-        drawIntersectionArea(window, intersectionAreaPoints);
+        // if (shapes.size() > 1 && shapes[0].isFinished())
+        // {
+        //     auto tmp = shapes[0].getVerts()[0].getGlobalBounds();
+        //     ss << "TMP Characters: "<< tmp.height << " height " << tmp.left << " left " << tmp.top << " top " << tmp.width << " width \n";
+        //     sf::RectangleShape hitbox;
+        //     hitbox.setPosition(sf::Vector2f(tmp.left, tmp.top));
+        //     hitbox.setSize(sf::Vector2f(tmp.height, tmp.width));
+        //     hitbox.setFillColor(sf::Color::Transparent);
+        //     hitbox.setOutlineThickness(3.f);
+        //     hitbox.setOutlineColor(sf::Color::Red);
+        //     window.draw(hitbox);
+        // }
+        
+
+        
+
+        // ss << "GLOBAL BOUNDS "<< tmp.getPosition() << "\n";
+        
+        //draw blue vers was here
+            
         // window.draw(ln);
 
         // window.draw(rect_shape);

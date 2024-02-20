@@ -109,13 +109,6 @@ bool Shape::isFinished()
     return finished;
 }
 
-// std::vector<sf::Vector2f> Shape::getVertsCoords()
-// {
-//     std::vector<sf::Vector2f> coords(maxVertCount);
-//     for (int i = 0; i < maxVertCount; i++)
-//         coords[i] = sf::Vector2f(verts[i].getPosition().x, verts[i].getPosition().y);
-//     return coords;
-// }
 std::vector<Point> Shape::getVertsCoords()
 {
     std::vector<Point> coords(maxVertCount);
@@ -125,6 +118,11 @@ std::vector<Point> Shape::getVertsCoords()
         coords[i].setY(verts[i].getPosition().y);
     }
     return coords;
+}
+
+void Shape::setVerts(std::vector<sf::CircleShape> verts)
+{
+    this->verts = verts;
 }
 
 // void Shape::draw(sf::RenderWindow &window)
@@ -143,3 +141,4 @@ std::vector<Point> Shape::getVertsCoords()
 //         }
 //     }
 // }
+
