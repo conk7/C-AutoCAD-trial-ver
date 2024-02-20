@@ -95,8 +95,12 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 void drawIntersectionArea(sf::RenderWindow &window, 
                         std::vector<Point> points, 
                         std::vector<sf::CircleShape> &newIntersectionPoints, 
-                        std::vector<Shape> &shapes)
+                        std::vector<Shape> &shapes,
+                        bool &redrawIntersectionArea)
 {
+
+    if(!redrawIntersectionArea) {return;}
+
     float constexpr EPS = 10;
 
     if(points.size() == 0)
@@ -147,7 +151,7 @@ void drawIntersectionArea(sf::RenderWindow &window,
         circle.setFillColor(sf::Color::Blue);
         newIntersectionPoints.push_back(circle);
     }
-
+    redrawIntersectionArea = false;
 }
 
 void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window, sf::View& view) 
@@ -236,7 +240,6 @@ int main()
     int counter = 0; 
     const float zoomFactor = 1.05;
 
-
     //intersectionArea
     std::vector<Point> intersectionAreaPoints;
     std::vector<sf::CircleShape> newIntersectionPoints;
@@ -253,8 +256,6 @@ int main()
         //update bg
         background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), 
                             static_cast<float>(window.getSize().y)));
-        // background.setPosition(sf::Vector2f(window.getPosition().x,
-        //                         window.getPosition().y));
 
         //update mouse pos
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
@@ -305,7 +306,7 @@ int main()
             {
                 isMouseButtonPressed = true;
             }
-            if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased) //triggers on any mouse button
+            if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased)
             {
 
                 if(shapes.size() == 0)
@@ -380,7 +381,7 @@ int main()
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 
         tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
-                                mousePosGrid.y * grid.getGridSizeF()); //new tile selection that works incorrectly                                                     //with negative values
+                                mousePosGrid.y * grid.getGridSizeF());
 
         //render begins
         window.clear();
@@ -395,15 +396,10 @@ int main()
         grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
-        if(redrawIntersectionArea)
-        {
-            drawIntersectionArea(window, intersectionAreaPoints, newIntersectionPoints, shapes);
-            redrawIntersectionArea = false;
-        }
+        drawIntersectionArea(window, intersectionAreaPoints, newIntersectionPoints, shapes, redrawIntersectionArea);
 
         drawShapes(shapes, window);
         drawIntersectionPoints(newIntersectionPoints, window);
-
 
         // if (shapes.size() > 1 && shapes[0].isFinished())
         // {
