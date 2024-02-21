@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include "..\include\algorithm.hpp"
-static float constexpr EPS = 1e-4;
+static float constexpr EPS = 1e-5;
 
 Point::Point(float x1, float y1)
 {
@@ -16,11 +16,11 @@ Point::Point()
     x = 0;
     y = 0;
 }
-float Point::get_x()
+float Point::getX()
 {
     return x;
 }
-float Point::get_y()
+float Point::getY()
 {
     return y;
 }
@@ -45,7 +45,7 @@ void Point::setY(float y)
 
 float angle(Point a)
 {
-    return (a.get_y() - P.get_y()) / sqrtf(pow(a.get_x() - P.get_x(), 2) + pow(a.get_y() - P.get_y(), 2));
+    return (a.getY() - P.getY()) / sqrtf(pow(a.getX() - P.getX(), 2) + pow(a.getY() - P.getY(), 2));
 }
 bool f(Point a, Point b)
 {
@@ -63,7 +63,7 @@ std::vector<Point> convex_hull(std::vector<Point> points)
     Point minr = Point(1e10, 0); 
     for (int i = 0; i < n; i++) 
     { 
-        if (points[i].get_x() < minr.get_x()) 
+        if (points[i].getX() < minr.getX()) 
         { 
             minr = points[i]; 
         } 
@@ -72,9 +72,9 @@ std::vector<Point> convex_hull(std::vector<Point> points)
     int count = 1; 
     for (auto it : points) 
     { 
-        if (fabs(it.get_x() - minr.get_x())>EPS || fabs(it.get_y() - minr.get_y())>EPS) 
+        if (fabs(it.getX() - minr.getX())>EPS || fabs(it.getY() - minr.getY())>EPS) 
         { 
-            a[count] = Point(it.get_x(), it.get_y()); 
+            a[count] = Point(it.getX(), it.getY()); 
             count++; 
         } 
     } 
@@ -86,22 +86,22 @@ std::vector<Point> convex_hull(std::vector<Point> points)
 }
 bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res) //peresechenie otrezkov
 {
-    Vector vec1 = Point( otr1.second.get_x() - otr1.first.get_x(), otr1.second.get_y() - otr1.first.get_y() );
-    Vector vec2 = Point( otr2.second.get_x() - otr2.first.get_x(), otr2.second.get_y() - otr2.first.get_y() );
-    float x1 = otr1.first.get_x(), y1 = otr1.first.get_y(), x2 = otr1.second.get_x(), y2 = otr1.second.get_y();
-    float x3 = otr2.first.get_x(), y3 = otr2.first.get_y(), x4 = otr2.second.get_x(), y4 = otr2.second.get_y();
-    if (vec1.get_x() != 0)
+    Vector vec1 = Point( otr1.second.getX() - otr1.first.getX(), otr1.second.getY() - otr1.first.getY() );
+    Vector vec2 = Point( otr2.second.getX() - otr2.first.getX(), otr2.second.getY() - otr2.first.getY() );
+    float x1 = otr1.first.getX(), y1 = otr1.first.getY(), x2 = otr1.second.getX(), y2 = otr1.second.getY();
+    float x3 = otr2.first.getX(), y3 = otr2.first.getY(), x4 = otr2.second.getX(), y4 = otr2.second.getY();
+    if (vec1.getX() != 0)
     {
-        if (vec1.get_y() != 0)
+        if (vec1.getY() != 0)
         {
-            if (vec2.get_x() / vec1.get_x() > vec2.get_y() / vec1.get_y() - EPS && vec2.get_x() / vec1.get_x() < vec2.get_y() / vec1.get_y() + EPS)
+            if (vec2.getX() / vec1.getX() > vec2.getY() / vec1.getY() - EPS && vec2.getX() / vec1.getX() < vec2.getY() / vec1.getY() + EPS)
             {
                 return false;
             }
         }
         else
         {
-            if (fabs(vec2.get_y()) < EPS)
+            if (fabs(vec2.getY()) < EPS)
             {
                 return false;
             }
@@ -109,7 +109,7 @@ bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::ve
     }
     else
     {
-        if (fabs(vec2.get_x()) < EPS)
+        if (fabs(vec2.getX()) < EPS)
         {
             return false;
         }
@@ -130,13 +130,13 @@ bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::ve
 }
 bool is_inside(std::vector<Point> fig, Point p)
 {
-    Vector prev = Point( fig[0].get_x() - p.get_x(), fig[0].get_y() - p.get_y() );
+    Vector prev = Point( fig[0].getX() - p.getX(), fig[0].getY() - p.getY() );
     float det_prev = 0;
     fig.push_back(fig[0]);
     for (int i = 1; i < fig.size(); i++)
     {
-        Vector tek = Point( fig[i].get_x() - p.get_x(), fig[i].get_y() - p.get_y() );
-        float det_tek = tek.get_x() * prev.get_y() - tek.get_y() * prev.get_x();
+        Vector tek = Point( fig[i].getX() - p.getX(), fig[i].getY() - p.getY() );
+        float det_tek = tek.getX() * prev.getY() - tek.getY() * prev.getX();
         if (det_tek != 0 &&  det_prev != 0)
         {
             if (sign(det_prev) != sign(det_tek))
@@ -174,8 +174,8 @@ std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector
         equals = false;
         for (int j = 0; j < fig2.size(); j++)
         {
-            if((fabs(fig1[i].get_x() - fig2[j].get_x())) < EPS ||
-            fabs(fig1[i].get_y() - fig2[j].get_y()) < EPS)
+            if((fabs(fig1[i].getX() - fig2[j].getX())) < EPS ||
+            fabs(fig1[i].getY() - fig2[j].getY()) < EPS)
             {
                 equals = true;
             }

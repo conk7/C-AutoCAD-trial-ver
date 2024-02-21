@@ -11,8 +11,8 @@ class Point
 public:
     Point(float x1, float y1);
     Point();
-    float get_x();
-    float get_y();
+    float getX();
+    float getY();
     void setX(float x);
     void setY(float y);
 };

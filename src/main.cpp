@@ -7,9 +7,9 @@
 #include "..\include\isOnVerts.hpp"
 #include <cmath>
 
-static float constexpr EPS = 1e-4;
+static float constexpr EPS = 1e-5;
 
-void drawIntersectionPoints(std::vector<sf::CircleShape> &newIntersectionPoints, sf::RenderWindow &window)
+void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShape> &newIntersectionPoints)
 {
     for(auto &point : newIntersectionPoints)
     {
@@ -23,19 +23,19 @@ void drawShapes(std::vector<Shape> &shapes, sf::RenderWindow &window)
     {
         std::vector<tLine> edges = shape.getEdges();
         for(auto &edge : edges)
-        {
             window.draw(edge);
-        }
+    }
+    for (auto &shape : shapes) //this loop is needed to avoid drawing verts under edges
+    {
         std::vector<sf::CircleShape> verts = shape.getVerts();
         for(auto &vert : verts)
         {
             window.draw(vert);
-
         }
     }
 }
 
-void findIntersectionArea(std::vector<Shape> &shapes, 
+void findIntersectionArea(std::vector<Shape> shapes, 
                         std::vector<Point> &intersectionAreaPoints, 
                         bool &redrawIntersectionArea,
                         std::stringstream &ss)
@@ -58,8 +58,8 @@ void findIntersectionArea(std::vector<Shape> &shapes,
             equals = false;
             for (int j = 0; j < intersectionAreaPoints.size(); j++)
             {
-                if((fabs(newIntersectionAreaPoints[i].get_x() - intersectionAreaPoints[j].get_x())) < EPS ||
-                fabs(newIntersectionAreaPoints[i].get_y() - intersectionAreaPoints[j].get_y()) < EPS)
+                if((fabs(newIntersectionAreaPoints[i].getX() - intersectionAreaPoints[j].getX())) < EPS ||
+                fabs(newIntersectionAreaPoints[i].getY() - intersectionAreaPoints[j].getY()) < EPS)
                 {
                     equals = true;
                 }
@@ -92,8 +92,7 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 
 }
 
-void drawIntersectionArea(sf::RenderWindow &window, 
-                        std::vector<Point> points, 
+void getIntersectionArea(std::vector<Point> points, 
                         std::vector<sf::CircleShape> &newIntersectionPoints, 
                         std::vector<Shape> &shapes,
                         bool &redrawIntersectionArea)
@@ -125,8 +124,8 @@ void drawIntersectionArea(sf::RenderWindow &window,
         {
             for (int i = points.size() - 1; i >= 0; i--)       
             {
-                float const pointX = points[i].get_x();
-                float const pointY = points[i].get_y();
+                float const pointX = points[i].getX();
+                float const pointY = points[i].getY();
 
                 float const vertX = vert.getPosition().x;
                 float const vertY = vert.getPosition().y;
@@ -145,8 +144,8 @@ void drawIntersectionArea(sf::RenderWindow &window,
     for(auto &point : points)
     {
         sf::CircleShape circle(radius);
-        float x = point.get_x();
-        float y = point.get_y();
+        float x = point.getX();
+        float y = point.getY();
         circle.setPosition(sf::Vector2f(x, y));
         circle.setFillColor(sf::Color::Blue);
         newIntersectionPoints.push_back(circle);
@@ -160,10 +159,10 @@ void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos
     currMousePos = sf::Mouse::getPosition(window);
 }
 
-void zoomView(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float scale)
+void zoomView(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float factor)
 {
     sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-    view.zoom(scale);
+    view.zoom(factor);
     sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
     const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
     view.move(offsetCoords);
@@ -363,7 +362,8 @@ int main()
             if (event.type == sf::Event::Resized)
             {
                 sf::View newView;
-                newView.setSize(window.getSize().x, window.getSize().y);
+                auto newSize = window.getSize();
+                newView.setSize(newSize.x, newSize.y);
                 if(counter > 0)
                     newView.zoom(pow(1/zoomFactor,counter));
                 else if(counter < 0)
@@ -377,11 +377,15 @@ int main()
         findIntersectionArea(shapes, intersectionAreaPoints, redrawIntersectionArea, ss);
 
 
+
+
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 
         tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
                                 mousePosGrid.y * grid.getGridSizeF());
+
+
 
         //render begins
         window.clear();
@@ -396,10 +400,10 @@ int main()
         grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
-        drawIntersectionArea(window, intersectionAreaPoints, newIntersectionPoints, shapes, redrawIntersectionArea);
+        getIntersectionArea(intersectionAreaPoints, newIntersectionPoints, shapes, redrawIntersectionArea);
 
         drawShapes(shapes, window);
-        drawIntersectionPoints(newIntersectionPoints, window);
+        drawIntersectionPoints(window, newIntersectionPoints);
 
         // if (shapes.size() > 1 && shapes[0].isFinished())
         // {
