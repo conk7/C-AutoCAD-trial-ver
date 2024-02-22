@@ -90,7 +90,7 @@ void Shape::updateDE(sf::Vector2i coords)
     
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
     edges[edges.size() - 1].updatePointB(coordsF);
-    if(edges.size() >= 2)
+    if(edges.size() >= 2 && edges.size() == maxVertCount)
         edges[edges.size() - 2].updatePointB(coordsF);
 }
 
