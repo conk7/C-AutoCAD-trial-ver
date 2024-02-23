@@ -47,12 +47,39 @@ void findIntersectionArea(std::vector<Shape> shapes,
         auto fig2 = shapes[1].getVertsCoords();
         intersectionAreaPoints = The_area_of_intersection(fig1, fig2);
         redrawIntersectionArea = true;
+
+        ss << intersectionAreaPoints.size() << "\n";
+        for(auto &point : intersectionAreaPoints)
+        {
+            ss << point.getX() + 5 << " "
+            << point.getY() + 5 << "\n";   
+        }
     }
     else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
     {
         if(intersectionAreaPoints.size() == 0) {return;}
         auto fig = shapes[shapes.size()-1].getVertsCoords();
         auto newIntersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
+
+        ss << "prev " << intersectionAreaPoints.size() << "\n";
+        for(auto &point : intersectionAreaPoints)
+        {
+            ss << point.getX() + 5 << " "
+            << point.getY() + 5 << "\n";   
+        }
+
+        ss << "new " << newIntersectionAreaPoints.size() << "\n";
+        for(auto &point : newIntersectionAreaPoints)
+        {
+            ss << point.getX() + 5 << " "
+            << point.getY() + 5 << "\n";   
+        }
+
+        if(newIntersectionAreaPoints.size() != intersectionAreaPoints.size())
+        {
+            intersectionAreaPoints = newIntersectionAreaPoints;
+            redrawIntersectionArea = true;
+        }
 
         bool equals = false;
         for (int i = 0; i < newIntersectionAreaPoints.size(); i++)
@@ -76,9 +103,12 @@ void findIntersectionArea(std::vector<Shape> shapes,
         {
             intersectionAreaPoints = newIntersectionAreaPoints;
             redrawIntersectionArea = true;
-            ss << "size " << newIntersectionAreaPoints.size() << " "
-            << intersectionAreaPoints.size() << "\n";   
         }
+        // for(auto &point : newIntersectionAreaPoints)
+        // {
+        //     ss << point.getX() << " "
+        //     << point.getY() << "\n";   
+        // }
     }
 }
 
@@ -98,8 +128,13 @@ void getIntersectionArea(std::vector<Point> points,
                         std::vector<sf::CircleShape> &newIntersectionPoints,
                         bool &redrawIntersectionArea)
 {
-    if(!redrawIntersectionArea) {redrawIntersectionArea = false; return;}
-    if(points.size() == 0) {redrawIntersectionArea = false; return;}
+    if(!redrawIntersectionArea) 
+    {
+        points.clear(); 
+        redrawIntersectionArea = false; 
+        return;
+    }
+    // if(points.size() == 0) {redrawIntersectionArea = false; return;}
 
     float radius = 5;
     newIntersectionPoints.clear();
@@ -180,7 +215,7 @@ int main()
     sf::Font font;
     font.loadFromFile("misc/Dosis-VariableFont_wght.ttf");
     sf::Text text;
-    text.setCharacterSize(70);
+    text.setCharacterSize(40);
     text.setFillColor(sf::Color::White);
     text.setFont(font);
     text.setPosition(20.f, 20.f);
@@ -239,14 +274,14 @@ int main()
 
         //update ui
         std::stringstream ss;
-        ss << "Screen: " << mousePosScreen.x << " " << mousePosScreen.y << "\n"
-            << "Window: " << mousePosWindow.x << " " << mousePosWindow.y << "\n"
-            << "View: " << mousePosView.x << " " << mousePosView.y << "\n"
-            << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
-            << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
-        // text.setString(ss.str());
+        // ss << "Screen: " << mousePosScreen.x << " " << mousePosScreen.y << "\n"
+        //     << "Window: " << mousePosWindow.x << " " << mousePosWindow.y << "\n"
+        //     << "View: " << mousePosView.x << " " << mousePosView.y << "\n"
+        //     << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
+        //     << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
 
-
+         ss
+            << "View: " << mousePosView.x << " " << mousePosView.y << "\n";
         isOnVerts(currMousePosView, shapes, ss);
 
 
