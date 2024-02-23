@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "..\include\algorithm.hpp"
 
-#define EPS 10e-5
+#define EPS 10e-3
 
 Point::Point(float x1, float y1)
 {
