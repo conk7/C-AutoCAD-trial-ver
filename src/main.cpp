@@ -7,7 +7,7 @@
 #include "..\include\isOnVerts.hpp"
 #include <cmath>
 
-static float constexpr EPS = 1e-5;
+#define EPS 1e-5
 
 void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShape> &newIntersectionPoints)
 {
@@ -25,7 +25,7 @@ void drawShapes(std::vector<Shape> &shapes, sf::RenderWindow &window)
         for(auto &edge : edges)
             window.draw(edge);
     }
-    for (auto &shape : shapes) //this loop is needed to avoid drawing verts under edges
+    for (auto &shape : shapes) //this loop is needed to avoid drawing vertices under edges
     {
         std::vector<sf::CircleShape> verts = shape.getVerts();
         for(auto &vert : verts)
@@ -93,53 +93,13 @@ void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, s
 }
 
 void getIntersectionArea(std::vector<Point> points, 
-                        std::vector<sf::CircleShape> &newIntersectionPoints, 
-                        std::vector<Shape> &shapes,
+                        std::vector<sf::CircleShape> &newIntersectionPoints,
                         bool &redrawIntersectionArea)
 {
+    if(!redrawIntersectionArea) {redrawIntersectionArea = false; return;}
+    if(points.size() == 0) {redrawIntersectionArea = false; return;}
 
-    if(!redrawIntersectionArea) {return;}
-
-    float constexpr EPS = 10;
-
-    if(points.size() == 0)
-        return;
-    
     float radius = 5;
-
-    for(auto &shape : shapes)
-    {
-        auto verts = shape.getVerts();
-        for(auto &vert : verts)
-        {
-            vert.setFillColor(sf::Color::Red);  
-        }
-        shape.setVerts(verts);
-    }
-
-    for(auto &shape : shapes)
-    {
-        auto verts = shape.getVerts();
-        for(auto &vert : verts)
-        {
-            for (int i = points.size() - 1; i >= 0; i--)       
-            {
-                float const pointX = points[i].getX();
-                float const pointY = points[i].getY();
-
-                float const vertX = vert.getPosition().x;
-                float const vertY = vert.getPosition().y;
-
-                if(fabs(pointX - vertX) < EPS && fabs(pointY - vertY) < EPS)
-                {
-                    vert.setFillColor(sf::Color::Blue);
-                    points.erase(points.begin() + i);
-                }
-            }
-        }
-        shape.setVerts(verts);
-    }
-
     newIntersectionPoints.clear();
     for(auto &point : points)
     {
@@ -400,7 +360,7 @@ int main()
         grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
-        getIntersectionArea(intersectionAreaPoints, newIntersectionPoints, shapes, redrawIntersectionArea);
+        getIntersectionArea(intersectionAreaPoints, newIntersectionPoints, redrawIntersectionArea);
 
         drawShapes(shapes, window);
         drawIntersectionPoints(window, newIntersectionPoints);
