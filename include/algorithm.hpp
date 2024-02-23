@@ -22,7 +22,9 @@ public:
 int sign(float a);
 float angle(Point a);
 bool f(Point a, Point b);
+float distance(Point p1, Point p2);
+bool are_collinear(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2);
 std::vector<Point> convex_hull(std::vector<Point> points);
-bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res);
+void per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res);
 bool is_inside(std::vector<Point> fig, Point p);
 std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector<Point> fig2);
