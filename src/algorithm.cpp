@@ -4,7 +4,8 @@
 #include <cmath>
 #include <algorithm>
 #include "..\include\algorithm.hpp"
-static float constexpr EPS = 1e-5;
+
+#define EPS 10e-5
 
 Point::Point(float x1, float y1)
 {
@@ -113,7 +114,7 @@ std::vector<Point> convex_hull(std::vector<Point> points)
         int flag = 0;
         for (int j = 0; j < a.size(); j++)
         {
-            if (fabs(points[i].getX() - points[j].getX()) < EPS  && fabs(points[i].getY() - points[j].getY()) < EPS)
+            if (fabs(points[i].getX() - a[j].getX()) < EPS && fabs(points[i].getY() - a[j].getY()) < EPS)
             {
                 flag = 1;
                 break;

@@ -7,7 +7,7 @@
 #include "..\include\isOnVerts.hpp"
 #include <cmath>
 
-#define EPS 1e-5
+#define EPS 10e-5
 
 void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShape> &newIntersectionPoints)
 {
