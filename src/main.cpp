@@ -11,6 +11,7 @@
 
 void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShape> &newIntersectionPoints)
 {
+    // if(newIntersectionPoints.size() == 0) {return;}
     for(auto &point : newIntersectionPoints)
     {
         window.draw(point);
@@ -49,6 +50,7 @@ void findIntersectionArea(std::vector<Shape> shapes,
     }
     else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
     {
+        if(intersectionAreaPoints.size() == 0) {return;}
         auto fig = shapes[shapes.size()-1].getVertsCoords();
         auto newIntersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
 
