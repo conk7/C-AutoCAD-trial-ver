@@ -4,22 +4,24 @@
 #include <cmath>
 #include <algorithm>
 #include "..\include\algorithm.hpp"
-static float EPS = 1e-9;
+
+#define EPS 10e-3
 
 Point::Point(float x1, float y1)
 {
     this->x = x1;
     this->y = y1;
 }
-Point::Point() {
+Point::Point() 
+{
     x = 0;
     y = 0;
 }
-float Point::get_x()
+float Point::getX()
 {
     return x;
 }
-float Point::get_y()
+float Point::getY()
 {
     return y;
 }
@@ -44,154 +46,183 @@ void Point::setY(float y)
 
 float angle(Point a)
 {
-    return (a.get_y() - P.get_y()) / sqrt(pow(a.get_x() - P.get_x(), 2) + pow(a.get_y() - P.get_y(), 2));
+    return (a.getY() - P.getY()) / sqrtf(pow(a.getX() - P.getX(), 2) + pow(a.getY() - P.getY(), 2));
 }
 bool f(Point a, Point b)
 {
     if (angle(a) < angle(b)) return true;
     return false;
 }
-std::vector<Point> convex_hull(std::vector<Point>& points) //выпуклая оболочка
-{
-    int n = points.size();
-    Point minr = Point(1e10, 0);
-    std::set<std::pair<float, float>> b;
-    for (int i = 0; i < n; i++)
-    {
-        b.insert({ points[i].get_x(), points[i].get_y()});
-        if (points[i].get_x() < minr.get_x()) {
-            minr = points[i];
-        }
-    }
-    P = minr;
-    n = b.size();
-    std::vector<Point>a(n);
-    int count = 1;
-    for (auto& it : b)
-    {
-        if (it.first != minr.get_x() || it.second != minr.get_y())
-        {
-            a[count] = Point(it.first, it.second);
-            count++;
-        }
-    }
-    a[0] = minr;
-    auto it = a.begin();
-    it++;
-    sort(it, a.end(), f);
-    a.push_back(minr);
-    n = a.size();
-    std::vector<Point> st;
-    st.push_back(a[0]);
-    st.push_back(a[1]);
-    std::vector<Point>obol;
-    obol.push_back(minr);
-    for (int i = 2; i < n; i++)
-    {
-        while (st.size() >= 2 && ((st[st.size() - 1].get_x() - st[st.size() - 2].get_x()) * (a[i].get_y() - st[st.size() - 1].get_y()) - (st[st.size() - 1].get_y() - st[st.size() - 2].get_y()) * (a[i].get_x() - st[st.size() - 1].get_x()) < 0))
-        {
-            st.pop_back();
-        }
-        st.push_back(a[i]);
-    }
-    return st;
+float distance(Point p1, Point p2) {
+    return sqrtf(pow(p1.getX() - p2.getX(), 2) + pow(p1.getY() - p2.getY(), 2));
 }
-bool per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res) //peresechenie otrezkov
+bool are_collinear(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2)
 {
-    Vector vec1 = Point( otr1.second.get_x() - otr1.first.get_x(), otr1.second.get_y() - otr1.first.get_y() );
-    Vector vec2 = Point( otr2.second.get_x() - otr2.first.get_x(), otr2.second.get_y() - otr2.first.get_y() );
-    float x1 = otr1.first.get_x(), y1 = otr1.first.get_y(), x2 = otr1.second.get_x(), y2 = otr1.second.get_y();
-    float x3 = otr2.first.get_x(), y3 = otr2.first.get_y(), x4 = otr2.second.get_x(), y4 = otr2.second.get_y();
-    if (vec1.get_x() != 0)
+    Vector vec1 = Point(otr1.second.getX() - otr1.first.getX(), otr1.second.getY() - otr1.first.getY());
+    Vector vec2 = Point(otr2.second.getX() - otr2.first.getX(), otr2.second.getY() - otr2.first.getY());
+    if (fabs(vec1.getX()) >= EPS)
     {
-        if (vec1.get_y() != 0)
+        if (fabs(vec1.getY()) >= EPS)
         {
-            if (vec2.get_x() / vec1.get_x() > vec2.get_y() / vec1.get_y() - EPS && vec2.get_x() / vec1.get_x() < vec2.get_y() / vec1.get_y() + EPS)
+            if (fabs(vec2.getX() / vec1.getX() - vec2.getY() / vec1.getY()) < EPS)
             {
-                return false;
+                return true;
             }
         }
         else
         {
-            if (fabs(vec2.get_y()) < EPS)
+            if (fabs(vec2.getY()) < EPS)
             {
-                return false;
+                return true;
             }
         }
     }
     else
     {
-        if (fabs(vec2.get_x()) < EPS)
+        if (fabs(vec2.getX()) < EPS)
         {
-            return false;
+            return true;
         }
+    }
+    return false;
+}
+std::vector<Point> convex_hull(std::vector<Point> points)
+{
+    int n = points.size();
+    if (n < 2)
+    {
+        return points;
+    }
+    int min_ind = 0;
+    Point minr = Point(1e10, 0);
+    for (int i = 0; i < n; i++)
+    {
+        if (points[i].getX() < minr.getX())
+        {
+            minr = points[i];
+            min_ind = i;
+        }
+    }
+    P = minr;
+    std::swap(points[0], points[min_ind]);
+    auto it = points.begin();
+    it++;
+    sort(it, points.end(), f);
+    std::vector<Point> a;
+    for (int i = 0; i < n; i++)
+    {
+        int flag = 0;
+        for (int j = 0; j < a.size(); j++)
+        {
+            if (fabs(points[i].getX() - a[j].getX()) < EPS && fabs(points[i].getY() - a[j].getY()) < EPS)
+            {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0)
+        {
+            a.push_back(points[i]);
+        }
+    }
+    // for (int i = 0; i < n - 1; i++)
+    // {
+    //     if (fabs(points[i].getX() - points[i + 1].getX()) >= EPS  || fabs(points[i].getY() - points[i + 1].getY()) >= EPS)
+    //     {
+    //         a.push_back(points[i]);
+    //         count++;
+    //     }
+    // }
+    // if (fabs(points[n - 1].getX() - points[n - 2].getX()) >= EPS  || fabs(points[n - 1].getY() - points[n - 2].getY()) >= EPS)
+    // {
+    //     a.push_back(points[n - 1]);
+    // }
+    // a.resize(count + 1);
+    return a;
+}
+void per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res)
+{
+    float x1 = otr1.first.getX(), y1 = otr1.first.getY(), x2 = otr1.second.getX(), y2 = otr1.second.getY();
+    float x3 = otr2.first.getX(), y3 = otr2.first.getY(), x4 = otr2.second.getX(), y4 = otr2.second.getY();
+    if (are_collinear(otr1, otr2))
+    {
+        return;
     }
     float det = (x1 - x2) * (y4 - y3) - (x4 - x3) * (y1 - y2);
     if (det == 0)
     {
-        return false;
+        return;
     }
     float t1 = ((y4 - y3) * (x4 - x2) + (x3 - x4) * (y4 - y2)) / det;
     float t2 = ((y2 - y1) * (x4 - x2) + (x1 - x2) * (y4 - y2)) / det;
-    if (t1 > 0-EPS && t1 < 1+EPS && t2 > 0-EPS && t2 < 1+EPS)
+    if (t1 > 0 && t1 < 1 && t2 > 0 && t2 < 1)
     {
         res.push_back(Point(x1 * t1 + x2 * (1 - t1), y1 * t1 + y2 * (1 - t1)));
-        return true;
     }
-    return false;
+    return;
 }
-bool is_inside(std::vector<Point>& fig, Point p)
+bool is_inside(std::vector<Point> fig, Point p)
 {
-    Vector prev = Point( fig[0].get_x() - p.get_x(), fig[0].get_y() - p.get_y() );
+    Vector prev = Point( fig[0].getX() - p.getX(), fig[0].getY() - p.getY() );
     float det_prev = 0;
     fig.push_back(fig[0]);
     for (int i = 1; i < fig.size(); i++)
-    {
-        Vector tek = Point( fig[i].get_x() - p.get_x(), fig[i].get_y() - p.get_y() );
-        float det_tek = tek.get_x() * prev.get_y() - tek.get_y() * prev.get_x();
-        if (det_prev != 0 && det_tek != 0)
+    {   
+        if (fabs(distance(fig[i-1], fig[i]) - distance(fig[i-1], p) - distance(fig[i], p)) < EPS)
+        {
+            return true;
+        }
+        if (are_collinear({ p, fig[i - 1] }, { p, fig[i] }))
+        {
+            return false;
+        }
+        Vector tek = Point( fig[i].getX() - p.getX(), fig[i].getY() - p.getY() );
+        float det_tek = tek.getX() * prev.getY() - tek.getY() * prev.getX();
+        if (i != 1)
         {
             if (sign(det_prev) != sign(det_tek))
             {
-                fig.pop_back();
                 return false;
             }
+            det_prev = det_tek;
+            prev = tek;
         }
-        det_prev = det_tek;
-        prev = tek;
+        else if (i==1)
+        {
+            det_prev = det_tek;
+            prev = tek;
+        }
     }
-    fig.pop_back();
     return true;
 }
 std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector<Point> fig2)
 {
+    // if(fig1.size() == 0 || fig2.size() == 0) {return fig1;} //uncomment this and comment line 53 in main to get a new intersention 
+                                                                //area every time a new group of intersected triangles is drawn
     std::vector<Point> points;
-    for (auto& it : fig2)
+    for (auto it : fig2)
     {
         if (is_inside(fig1, it))
         {
             points.push_back(it); 
         }
     }
-    for (auto& it : fig1)
+    for (auto it : fig1)
     {
         if (is_inside(fig2, it)) 
         { 
             points.push_back(it);
         }
     }
-    auto fig1_copy = fig1;
-    auto fig2_copy = fig2;
-    fig1_copy.push_back(fig1[0]);
-    fig2_copy.push_back(fig2[0]);
-    for (int i = 1; i < fig1.size() + 1; i++)
+    fig1.push_back(fig1[0]);
+    fig2.push_back(fig2[0]);
+    for (int i = 1; i < fig1.size(); i++)
     {
-        for (int j = 1; j < fig2.size() + 1; j++)
+        for (int j = 1; j < fig2.size(); j++)
         {
-            per_otr({ fig1_copy[i - 1],fig1_copy[i] }, { fig2_copy[j - 1], fig2_copy[j] }, points);
+            per_otr({ fig1[i - 1],fig1[i] }, { fig2[j - 1], fig2[j] }, points);
         }
     }
     points = convex_hull(points);
-    points.pop_back();
     return points;
 }

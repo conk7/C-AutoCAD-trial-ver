@@ -90,7 +90,7 @@ void Shape::updateDE(sf::Vector2i coords)
     
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
     edges[edges.size() - 1].updatePointB(coordsF);
-    if(edges.size() >= 2)
+    if(edges.size() >= 2 && edges.size() == maxVertCount)
         edges[edges.size() - 2].updatePointB(coordsF);
 }
 
@@ -109,13 +109,6 @@ bool Shape::isFinished()
     return finished;
 }
 
-// std::vector<sf::Vector2f> Shape::getVertsCoords()
-// {
-//     std::vector<sf::Vector2f> coords(maxVertCount);
-//     for (int i = 0; i < maxVertCount; i++)
-//         coords[i] = sf::Vector2f(verts[i].getPosition().x, verts[i].getPosition().y);
-//     return coords;
-// }
 std::vector<Point> Shape::getVertsCoords()
 {
     std::vector<Point> coords(maxVertCount);
@@ -125,6 +118,11 @@ std::vector<Point> Shape::getVertsCoords()
         coords[i].setY(verts[i].getPosition().y);
     }
     return coords;
+}
+
+void Shape::setVerts(std::vector<sf::CircleShape> verts)
+{
+    this->verts = verts;
 }
 
 // void Shape::draw(sf::RenderWindow &window)
@@ -143,3 +141,4 @@ std::vector<Point> Shape::getVertsCoords()
 //         }
 //     }
 // }
+
