@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.28.0)
 project(CMakeSFMLProject LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-# find_package(sfml REQUIRED)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
@@ -22,6 +20,7 @@ if(WIN32)
         TARGET CMakeSFMLProject
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:CMakeSFMLProject>
         VERBATIM)
+    target_link_options(CMakeSFMLProject PRIVATE -mwindows)
 endif()
 
 install(TARGETS CMakeSFMLProject)
