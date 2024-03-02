@@ -213,7 +213,7 @@ int main()
 
     //debug info
     sf::Font font;
-    font.loadFromFile("misc/Dosis-VariableFont_wght.ttf");
+    font.loadFromFile("../../misc/Dosis-VariableFont_wght.ttf");
     sf::Text text;
     text.setCharacterSize(40);
     text.setFillColor(sf::Color::White);
@@ -280,8 +280,7 @@ int main()
         //     << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
         //     << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
 
-         ss
-            << "View: " << mousePosView.x << " " << mousePosView.y << "\n";
+        ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
         isOnVerts(currMousePosView, shapes, ss);
 
 
