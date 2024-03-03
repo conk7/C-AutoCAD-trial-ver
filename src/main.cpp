@@ -55,81 +55,6 @@ void drawShapes(std::vector<Shape> &shapes, sf::RenderWindow &window)
     }
 }
 
-// void findIntersectionPoints(std::vector<Shape> shapes, 
-//                         std::vector<Point> &intersectionAreaPoints, 
-//                         bool &redrawIntersectionArea,
-//                         std::stringstream &ss)
-// {
-//     if (shapes.size() == 2 && shapes[1].isFinished())
-//     {
-//         auto fig1 = shapes[0].getVertsCoords();
-//         auto fig2 = shapes[1].getVertsCoords();
-//         intersectionAreaPoints = The_area_of_intersection(fig1, fig2);
-//         redrawIntersectionArea = true;
-
-//         ss << intersectionAreaPoints.size() << "\n";
-//         for(auto &point : intersectionAreaPoints)
-//         {
-//             ss << point.getX() + 5 << " "
-//             << point.getY() + 5 << "\n";   
-//         }
-//     }
-//     else if (shapes.size() > 2 && shapes[shapes.size() - 1].isFinished())
-//     {
-//         if(intersectionAreaPoints.size() == 0) {return;}
-//         auto fig = shapes[shapes.size()-1].getVertsCoords();
-//         auto newIntersectionAreaPoints = The_area_of_intersection(fig, intersectionAreaPoints);
-
-//         ss << "prev " << intersectionAreaPoints.size() << "\n";
-//         for(auto &point : intersectionAreaPoints)
-//         {
-//             ss << point.getX() + 5 << " "
-//             << point.getY() + 5 << "\n";   
-//         }
-
-//         ss << "new " << newIntersectionAreaPoints.size() << "\n";
-//         for(auto &point : newIntersectionAreaPoints)
-//         {
-//             ss << point.getX() + 5 << " "
-//             << point.getY() + 5 << "\n";   
-//         }
-
-//         if(newIntersectionAreaPoints.size() != intersectionAreaPoints.size())
-//         {
-//             intersectionAreaPoints = newIntersectionAreaPoints;
-//             redrawIntersectionArea = true;
-//         }
-
-//         bool equals = false;
-//         for (int i = 0; i < newIntersectionAreaPoints.size(); i++)
-//         {
-//             equals = false;
-//             for (int j = 0; j < intersectionAreaPoints.size(); j++)
-//             {
-//                 if((fabs(newIntersectionAreaPoints[i].getX() - intersectionAreaPoints[j].getX())) < EPS ||
-//                 fabs(newIntersectionAreaPoints[i].getY() - intersectionAreaPoints[j].getY()) < EPS)
-//                 {
-//                     equals = true;
-//                 }
-//             }
-//             if(!equals)
-//                 break;
-//         }
-
-//         if(equals)
-//             return;
-//         else
-//         {
-//             intersectionAreaPoints = newIntersectionAreaPoints;
-//             redrawIntersectionArea = true;
-//         }
-//         // for(auto &point : newIntersectionAreaPoints)
-//         // {
-//         //     ss << point.getX() << " "
-//         //     << point.getY() << "\n";   
-//         // }
-//     }
-// }
 
 void findIntersectionPoints(std::vector<Shape> shapes, 
                         std::vector<Point> &intersectionAreaPoints, 
@@ -139,7 +64,6 @@ void findIntersectionPoints(std::vector<Shape> shapes,
 
     if(!(shapes.size() >= 2 && shapes[shapes.size() - 1].isFinished())) {return;}
 
-    // intersectionAreaPoints.clear();
 
     auto fig1 = shapes[0].getVertsCoords();
     auto fig2 = shapes[1].getVertsCoords();
@@ -189,7 +113,7 @@ void findIntersectionPoints(std::vector<Shape> shapes,
         equals = false;
         for (int j = 0; j < intersectionAreaPoints.size(); j++)
         {
-            if((fabs(newIntersectionAreaPoints[i].getX() - intersectionAreaPoints[j].getX())) < EPS ||
+            if((fabs(newIntersectionAreaPoints[i].getX() - intersectionAreaPoints[j].getX())) < EPS &&
             fabs(newIntersectionAreaPoints[i].getY() - intersectionAreaPoints[j].getY()) < EPS)
             {
                 equals = true;
@@ -495,15 +419,11 @@ int main()
         findIntersectionPoints(shapes, intersectionAreaPoints, redrawIntersectionArea, ss);
 
 
-
-
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 
         tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
                                 mousePosGrid.y * grid.getGridSizeF());
-
-
 
         //render begins
         window.clear();
