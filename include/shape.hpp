@@ -9,19 +9,20 @@
 class Shape
 {
 private:
-    int maxVertCount;
-    bool dynamicEdge;
-    bool finished;
+    unsigned vertCount = 0;
+    bool dynamicEdge = false;
+    bool finished = true;
     std::vector<tLine> edges;
     std::vector<sf::CircleShape> verts;
 public:
-    Shape(unsigned vertCount);
+    Shape();
     void addVert(sf::Vector2i coords, Grid grid);
     // void delVert();
     void updateDE(sf::Vector2i coords);
     std::vector<tLine> getEdges() const;
     std::vector<sf::CircleShape> getVerts() const;
     void setVerts(std::vector<sf::CircleShape> verts);
+    void setEdges(std::vector<tLine> edges);
     bool isFinished();
     // std::vector<sf::Vector2f> getVertsCoords();
     void draw(sf::RenderWindow window);

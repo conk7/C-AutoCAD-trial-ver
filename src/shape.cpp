@@ -3,9 +3,11 @@
 #include "..\include\line.hpp"
 #include <cmath>
 
-Shape::Shape(unsigned const vertCount = 3)
+#define EPS 10e-3
+
+Shape::Shape()
 {
-    maxVertCount = vertCount;
+    vertCount = 0;
     // this->edges.resize(vertCount);
     // this->verts.resize(vertCount);
     dynamicEdge = false;
@@ -18,68 +20,56 @@ void Shape::addVert(sf::Vector2i coords, Grid grid)
     int gridSize = grid.getGridSizeU();
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
     coords = sf::Vector2i(round(coordsF.x / gridSizeF) * gridSize, round(coordsF.y / gridSizeF) * gridSize);
+    coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
+
     if(verts.size() == 0)
     {
         float radius = 5;
         sf::CircleShape circle(radius);
         circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-        circle.setFillColor(sf::Color::Red);
+        circle.setFillColor(sf::Color::Yellow);
         verts.push_back(circle);
 
-        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x + radius, coords.y + radius), sf::Color::Black, 5.f);
+        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x + radius, coords.y + radius), sf::Color(105,105,105,255), radius);
         edges.push_back(edge);
         finished = false;
         dynamicEdge = true;
+
+
+        return;
     }
-    else if(verts.size() < maxVertCount - 2)
+    else if(verts.size() > 0)
     {
         float radius = 5;
-        sf::CircleShape circle(radius);
-        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-        circle.setFillColor(sf::Color::Red);
-        verts.push_back(circle);
+        if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
+            abs(coordsF.y - verts[0].getPosition().y - radius) < EPS)
+        {
+            edges[edges.size() - 1].updatePointB(coordsF);
+            dynamicEdge = false;
+            finished = true;
 
-        sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
-        edges[edges.size() - 1].updatePointB(coordsF);
+            for (auto &vert : verts)
+                vert.setFillColor(sf::Color::Red);
+            for (auto &egde : edges)
+                egde.setColor(sf::Color::Black);
 
-        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x+5, coords.y+5), sf::Color::Black, 5.f);
-        edges.push_back(edge);
-    }
-    else if(verts.size() == maxVertCount - 2)
-    {
-        float radius = 5;
-        sf::CircleShape circle(radius);
-        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-        circle.setFillColor(sf::Color::Red);
-        verts.push_back(circle);
+            return;
+        }
+        else
+        {
+            sf::CircleShape circle(radius);
+            circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
+            circle.setFillColor(sf::Color::Red);
+            verts.push_back(circle);
 
-        sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
-        edges[edges.size() - 1].updatePointB(coordsF);
-        
-        sf::Vector2f posFirstVert = verts[0].getPosition();
+            edges[edges.size() - 1].updatePointB(coordsF);
 
-        tLine edge(sf::Vector2f(posFirstVert.x + 5, posFirstVert.y + 5), sf::Vector2f(posFirstVert.x+5, posFirstVert.y+5), sf::Color::Black, 5.f);
-        edges.push_back(edge);
+            tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x+5, coords.y+5), sf::Color(105,105,105,255), radius);
+            edges.push_back(edge);
 
-        edge.setPointA(coordsF);
-        edge.setPointB(sf::Vector2f(coords.x, coords.y));
-        edges.push_back(edge);
-
-    }
-    else if(verts.size() == maxVertCount-1)
-    {
-        sf::Vector2f pointA = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
-        edges[edges.size() - 1].updatePointB(pointA);
-        edges[edges.size() - 2].updatePointB(pointA);
-
-        float radius = 5;
-        sf::CircleShape circle(radius);
-        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-        circle.setFillColor(sf::Color::Red);
-        verts.push_back(circle);
-
-        finished = true;
-        dynamicEdge = false;
+            
+            return;
+        }
     }
 }
 
@@ -90,8 +80,6 @@ void Shape::updateDE(sf::Vector2i coords)
     
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
     edges[edges.size() - 1].updatePointB(coordsF);
-    if(edges.size() >= 2 && edges.size() == maxVertCount)
-        edges[edges.size() - 2].updatePointB(coordsF);
 }
 
 std::vector<tLine> Shape::getEdges() const
@@ -111,8 +99,9 @@ bool Shape::isFinished()
 
 std::vector<Point> Shape::getVertsCoords()
 {
-    std::vector<Point> coords(maxVertCount);
-    for (int i = 0; i < maxVertCount; i++)
+    unsigned vertCount = verts.size();
+    std::vector<Point> coords(vertCount);
+    for (int i = 0; i < vertCount; i++)
     {
         coords[i].setX(verts[i].getPosition().x);
         coords[i].setY(verts[i].getPosition().y);
@@ -123,6 +112,11 @@ std::vector<Point> Shape::getVertsCoords()
 void Shape::setVerts(std::vector<sf::CircleShape> verts)
 {
     this->verts = verts;
+}
+
+void Shape::setEdges(std::vector<tLine> edges)
+{
+    this->edges = edges;
 }
 
 // void Shape::draw(sf::RenderWindow &window)

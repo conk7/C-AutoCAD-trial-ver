@@ -99,12 +99,12 @@ sf::Vector2f tLine::getPointB() const
     return pointB;
 }
 
-void tLine::setPointA(sf::Vector2f pos)
-{
-    this->pointA = pos;
-}
+// void tLine::setPointA(sf::Vector2f pos)
+// {
+//     this->pointA = pos;
+// }
 
-void tLine::setPointB(sf::Vector2f pos)
-{
-    this->pointB = pos;
-}
+// void tLine::setPointB(sf::Vector2f pos)
+// {
+//     this->pointB = pos;
+// }
