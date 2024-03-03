@@ -250,12 +250,11 @@ int main()
     tileSelector.setOutlineThickness(3);
   
 
-    //vector of all triangles (polygons)
     std::vector<Shape> shapes;
 
     //zoom
     int counter = 0; 
-    const float zoomFactor = 1.05;
+    const float zoomFactor = 1.1;
 
     //intersectionArea
     std::vector<Point> intersectionAreaPoints;
@@ -338,17 +337,8 @@ int main()
                 else if (shapes.size() != 0 && !shapes[shapes.size() - 1].isFinished())
                 {
                     shapes[shapes.size() - 1].addVert(currMousePosView, grid);
-                    // auto edges = shapes[shapes.size() - 1].getEdges();
-                    // ss << edges.size();
                     isMouseButtonPressed = false;
                 }
-                // else if (shapes.size() != 0 && shapes[shapes.size() - 1].isFinished())
-                // {
-                //     Shape shape();
-                //     shape.addVert(currMousePosView, grid);
-                //     shapes.push_back(shape);
-                //     isMouseButtonPressed = false;
-                // }
             }
             if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
             {
@@ -362,18 +352,18 @@ int main()
             }
             if (event.type == sf::Event::MouseWheelMoved)
             {
-                if (event.mouseWheel.delta > 0 && counter < 24) 
+                if (event.mouseWheel.delta > 0 && counter < 12) 
                 {
-                    if(counter > 24)
-                        counter = 24;
+                    if(counter > 12)
+                        counter = 12;
                     counter += 1;
                     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                     zoomView(window, view, mousePos.x, mousePos.y, 1/zoomFactor);
                 }
-                if (event.mouseWheel.delta < 0 && counter > -24) 
+                if (event.mouseWheel.delta < 0 && counter > -12) 
                   {
-                    if(counter < -24)
-                        counter = -24;
+                    if(counter < -12)
+                        counter = -12;
                     counter -= 1;
                     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                     zoomView(window, view, mousePos.x, mousePos.y, zoomFactor);
@@ -440,24 +430,9 @@ int main()
 
         getIntersectionPoints(intersectionAreaPoints, intersectionPoints, redrawIntersectionArea);
 
+        drawIntersectionArea(window, intersectionPoints);
         drawShapes(shapes, window);
         drawIntersectionPoints(window, intersectionPoints);
-        drawIntersectionArea(window, intersectionPoints);
-
-        // if (shapes.size() > 1 && shapes[0].isFinished())
-        // {
-        //     auto tmp = shapes[0].getVerts()[0].getGlobalBounds();
-        //     ss << "TMP Characters: "<< tmp.height << " height " << tmp.left << " left " << tmp.top << " top " << tmp.width << " width \n";
-        //     sf::RectangleShape hitbox;
-        //     hitbox.setPosition(sf::Vector2f(tmp.left, tmp.top));
-        //     hitbox.setSize(sf::Vector2f(tmp.height, tmp.width));
-        //     hitbox.setFillColor(sf::Color::Transparent);
-        //     hitbox.setOutlineThickness(3.f);
-        //     hitbox.setOutlineColor(sf::Color::Red);
-        //     window.draw(hitbox);
-        // }
-        
-        // ss << "GLOBAL BOUNDS "<< tmp.getPosition() << "\n";
 
         window.setView(visibleArea);
 
