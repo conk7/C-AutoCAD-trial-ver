@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "..\include\grid.hpp"
-#include <math.h>
+#include <cmath>
 #include <sstream>
 
 Grid::Grid()

@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
-#include "..\include\shape.hpp"
+#include "..\include\polygon.hpp"
 #include "..\include\line.hpp"
 #include <cmath>
 
 #define EPS 10e-3
 
-Shape::Shape()
+Polygon::Polygon()
 {
     vertCount = 0;
     // this->edges.resize(vertCount);
@@ -14,7 +14,7 @@ Shape::Shape()
     finished = true;
 }
 
-void Shape::addVert(sf::Vector2i coords, Grid grid)
+void Polygon::addVert(sf::Vector2i coords, Grid grid)
 {
     float gridSizeF = grid.getGridSizeF();
     int gridSize = grid.getGridSizeU();
@@ -73,31 +73,34 @@ void Shape::addVert(sf::Vector2i coords, Grid grid)
     }
 }
 
-void Shape::updateDE(sf::Vector2i coords)
+void Polygon::updateDynamicEdge(Grid grid, sf::Vector2i coords)
 {
     if(!dynamicEdge)
         return;
-    
+    float gridSizeF = grid.getGridSizeF();
+    int gridSize = grid.getGridSizeU();
+
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
+    coordsF = sf::Vector2f(round(coordsF.x / gridSizeF) * gridSize, round(coordsF.y / gridSizeF) * gridSize);
     edges[edges.size() - 1].updatePointB(coordsF);
 }
 
-std::vector<tLine> Shape::getEdges() const
+std::vector<tLine> Polygon::getEdges() const
 {
     return this->edges;
 }
 
-std::vector<sf::CircleShape> Shape::getVerts() const
+std::vector<sf::CircleShape> Polygon::getVerts() const
 {
     return this->verts;
 }
 
-bool Shape::isFinished()
+bool Polygon::isFinished()
 {
     return finished;
 }
 
-std::vector<Point> Shape::getVertsCoords()
+std::vector<Point> Polygon::getVertsCoords()
 {
     unsigned vertCount = verts.size();
     std::vector<Point> coords(vertCount);
@@ -109,17 +112,17 @@ std::vector<Point> Shape::getVertsCoords()
     return coords;
 }
 
-void Shape::setVerts(std::vector<sf::CircleShape> verts)
+void Polygon::setVerts(std::vector<sf::CircleShape> verts)
 {
     this->verts = verts;
 }
 
-void Shape::setEdges(std::vector<tLine> edges)
+void Polygon::setEdges(std::vector<tLine> edges)
 {
     this->edges = edges;
 }
 
-// void Shape::draw(sf::RenderWindow &window)
+// void Polygon::draw(sf::RenderWindow &window)
 // {
 //     for (auto &shape : shapes)
 //     {

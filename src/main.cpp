@@ -2,52 +2,25 @@
 #include <sstream>
 #include <vector>
 #include "..\include\grid.hpp"
-#include "..\include\shape.hpp"
+#include "..\include\polygon.hpp"
 #include "..\include\line.hpp"
 #include "..\include\movingVert.hpp"
+#include "..\include\polygons.hpp"
 #include <cmath>
 
 #define EPS 10e-3
 
-void drawIntersectionArea(sf::RenderWindow& window, std::vector<sf::CircleShape> &intersectionPoints)
+void drawPolygons(std::vector<Polygon> &polygons, sf::RenderWindow &window)
 {
-    sf::ConvexShape polygon;
-    unsigned vertCount = intersectionPoints.size();
-    polygon.setPointCount(vertCount);
-    float radius = 5;
-    for(int i = 0; i < vertCount; i++)
-    {   
-        float x = intersectionPoints[i].getPosition().x + radius;
-        float y = intersectionPoints[i].getPosition().y + radius;
-        polygon.setPoint(i, sf::Vector2f(x, y));
-    }
-
-
-    polygon.setFillColor(sf::Color(173,216,230,155));
-    polygon.setOutlineThickness(0);
-    
-    window.draw(polygon);
-}
-
-void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShape> &intersectionPoints)
-{
-    for(auto &point : intersectionPoints)
+    for (auto &polygon : polygons)
     {
-        window.draw(point);
-    }
-}
-
-void drawShapes(std::vector<Shape> &shapes, sf::RenderWindow &window)
-{
-    for (auto &shape : shapes)
-    {
-        std::vector<tLine> edges = shape.getEdges();
+        std::vector<tLine> edges = polygon.getEdges();
         for(auto &edge : edges)
             window.draw(edge);
     }
-    for (auto &shape : shapes) //this loop is needed to avoid drawing vertices under edges
+    for (auto &polygon : polygons) //this loop is needed to avoid drawing vertices under edges
     {
-        std::vector<sf::CircleShape> verts = shape.getVerts();
+        std::vector<sf::CircleShape> verts = polygon.getVerts();
         for(auto &vert : verts)
         {
             window.draw(vert);
@@ -55,120 +28,15 @@ void drawShapes(std::vector<Shape> &shapes, sf::RenderWindow &window)
     }
 }
 
-
-void findIntersectionPoints(std::vector<Shape> shapes, 
-                        std::vector<Point> &intersectionAreaPoints, 
-                        bool &redrawIntersectionArea,
-                        std::stringstream &ss)
-{
-
-    if(!(shapes.size() >= 2 && shapes[shapes.size() - 1].isFinished())) {return;}
-
-
-    auto fig1 = shapes[0].getVertsCoords();
-    auto fig2 = shapes[1].getVertsCoords();
-    std::vector<Point> newIntersectionAreaPoints = The_area_of_intersection(fig1, fig2);
-
-    if(newIntersectionAreaPoints.size() == 0) 
-    {
-        intersectionAreaPoints = newIntersectionAreaPoints;
-        redrawIntersectionArea = true;
-        return;
-    }
-
-    for(int i = 2; i < shapes.size(); i++)
-    {
-        newIntersectionAreaPoints = The_area_of_intersection(newIntersectionAreaPoints, shapes[i].getVertsCoords());
-        if(newIntersectionAreaPoints.size() == 0)
-        {
-            intersectionAreaPoints = newIntersectionAreaPoints;
-            redrawIntersectionArea = true;
-            return;
-        }
-    }
-    ss << "OLD\n";
-    ss << intersectionAreaPoints.size() << "\n";
-    for(auto &point : intersectionAreaPoints)
-    {
-        ss << point.getX() + 5 << " "
-        << point.getY() + 5 << "\n";   
-    }
-    ss << "NEW\n";
-    ss << newIntersectionAreaPoints.size() << "\n";
-    for(auto &point : newIntersectionAreaPoints)
-    {
-        ss << point.getX() + 5 << " "
-        << point.getY() + 5 << "\n";   
-    }
-
-    if(newIntersectionAreaPoints.size() != intersectionAreaPoints.size())
-    {
-        intersectionAreaPoints = newIntersectionAreaPoints;
-        redrawIntersectionArea = true;
-    }
-
-    bool equals = false;
-    for (int i = 0; i < newIntersectionAreaPoints.size(); i++)
-    {
-        equals = false;
-        for (int j = 0; j < intersectionAreaPoints.size(); j++)
-        {
-            if((fabs(newIntersectionAreaPoints[i].getX() - intersectionAreaPoints[j].getX())) < EPS &&
-            fabs(newIntersectionAreaPoints[i].getY() - intersectionAreaPoints[j].getY()) < EPS)
-            {
-                equals = true;
-            }
-        }
-        if(!equals)
-            break;
-    }
-
-    if(equals)
-        return;
-    else
-    {
-        intersectionAreaPoints = newIntersectionAreaPoints;
-        redrawIntersectionArea = true;
-    }
-
-}
-
-
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
 {
     prevMousePos = currMousePos;
-    // currMousePos = sf::Mouse::getPosition(window);
     currMousePos = sf::Mouse::getPosition(window);
     window.setView(view);
     sf::Vector2f currMousePosF = window.mapPixelToCoords(currMousePos);
     currMousePos = { static_cast<int>(currMousePosF.x), static_cast<int>(currMousePosF.y) };
     window.setView(window.getDefaultView());
 
-}
-
-void getIntersectionPoints(std::vector<Point> points, 
-                        std::vector<sf::CircleShape> &intersectionPoints,
-                        bool &redrawIntersectionArea)
-{
-    if(!redrawIntersectionArea) 
-    {
-        points.clear(); 
-        redrawIntersectionArea = false; 
-        return;
-    }
-
-    float radius = 5;
-    intersectionPoints.clear();
-    for(auto &point : points)
-    {
-        sf::CircleShape circle(radius);
-        float x = point.getX();
-        float y = point.getY();
-        circle.setPosition(sf::Vector2f(x, y));
-        circle.setFillColor(sf::Color::Blue);
-        intersectionPoints.push_back(circle);
-    }
-    redrawIntersectionArea = false;
 }
 
 void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window, sf::View& view) 
@@ -201,12 +69,6 @@ int main()
     
     //grid
     Grid grid(100.f);
-
-    //init game elements
-    sf::CircleShape shape(1000.f);
-    sf::RectangleShape rect_shape(sf::Vector2f(grid.getGridSizeF()*5, grid.getGridSizeF()*5));
-    rect_shape.setPosition(100.f,100.f);
-    shape.setFillColor(sf::Color::Green);
 
     sf::RectangleShape background;
     background.setFillColor(sf::Color::White);
@@ -250,14 +112,14 @@ int main()
     tileSelector.setOutlineThickness(3);
   
 
-    std::vector<Shape> shapes;
+    std::vector<Polygon> polygons;
 
     //zoom
     int counter = 0; 
     const float zoomFactor = 1.1;
 
     //intersectionArea
-    std::vector<Point> intersectionAreaPoints;
+    std::vector<Point> intersectionPointsCoords;
     std::vector<sf::CircleShape> intersectionPoints;
 
     bool redrawIntersectionArea = false;
@@ -282,9 +144,9 @@ int main()
 
         
 
-        if(shapes.size() > 0)
+        if(polygons.size() > 0)
         {
-            shapes[shapes.size() - 1].updateDE(currMousePosView);
+            polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
         }
 
         mousePosScreen = sf::Mouse::getPosition();
@@ -304,7 +166,6 @@ int main()
         //     << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
 
         ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
-        // isOnVerts(currMousePosView, shapes, ss);
 
 
         //event loop
@@ -327,16 +188,16 @@ int main()
             if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased)
             {
 
-                if(shapes.size() == 0 || shapes.size() != 0 && shapes[shapes.size() - 1].isFinished())
+                if(polygons.size() == 0 || polygons.size() != 0 && polygons[polygons.size() - 1].isFinished())
                 {
-                    Shape shape;
-                    shape.addVert(currMousePosView, grid);
-                    shapes.push_back(shape);
+                    Polygon polygon;
+                    polygon.addVert(currMousePosView, grid);
+                    polygons.push_back(polygon);
                     isMouseButtonPressed = false;
                 }
-                else if (shapes.size() != 0 && !shapes[shapes.size() - 1].isFinished())
+                else if (polygons.size() != 0 && !polygons[polygons.size() - 1].isFinished())
                 {
-                    shapes[shapes.size() - 1].addVert(currMousePosView, grid);
+                    polygons[polygons.size() - 1].addVert(currMousePosView, grid);
                     isMouseButtonPressed = false;
                 }
             }
@@ -384,8 +245,8 @@ int main()
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                          !isVertMoving)
             {
-                movingVertIdx = findShapeOfVert(shapes, mousePosView, ss);
-                if(movingVertIdx.shapeNum != -1 && movingVertIdx.VertNum != -1)
+                movingVertIdx = findPolygonIdxOfVert(polygons, mousePosView, ss);
+                if(movingVertIdx.polygonIdx != -1 && movingVertIdx.vertIdx != -1)
                     isVertMoving = true;
                 // ss << "\n CHEKING VERT \n";
                 // ss << "Vert moving " << isVertMoving << "\n";
@@ -393,7 +254,7 @@ int main()
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {
-                moveVert(shapes, grid, movingVertIdx, mousePosView);
+                moveVert(polygons, grid, movingVertIdx, mousePosView);
                 // ss << "\n MOVING VERT \n";
             }
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
@@ -406,7 +267,7 @@ int main()
         }
        
         // Calling Alexey's function
-        findIntersectionPoints(shapes, intersectionAreaPoints, redrawIntersectionArea, ss);
+        findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
 
 
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
@@ -428,10 +289,10 @@ int main()
         grid.draw_axes(window, view, counter, ss);
         window.draw(tileSelector);
 
-        getIntersectionPoints(intersectionAreaPoints, intersectionPoints, redrawIntersectionArea);
+        getIntersectionPoints(intersectionPointsCoords, intersectionPoints, redrawIntersectionArea);
 
         drawIntersectionArea(window, intersectionPoints);
-        drawShapes(shapes, window);
+        drawPolygons(polygons, window);
         drawIntersectionPoints(window, intersectionPoints);
 
         window.setView(visibleArea);

@@ -1,12 +1,11 @@
-#include <unordered_map>
-#include "..\include\shape.hpp"
+#include "..\include\polygon.hpp"
 #include <sstream>
 
 struct MovingVert
 {
-    int shapeNum = -1, VertNum = -1;
+    int polygonIdx = -1, vertIdx = -1;
 };
 
-MovingVert findShapeOfVert(std::vector<Shape>& shapes, sf::Vector2f coords, std::stringstream &ss);
-void moveVert(std::vector<Shape>& shapes, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView);
+MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coords, std::stringstream &ss);
+void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView);
 
