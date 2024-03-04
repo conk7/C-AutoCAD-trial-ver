@@ -14,3 +14,5 @@ void findIntersectionPoints(std::vector<Polygon> shapes,
 void getIntersectionPoints(std::vector<Point> points, 
                         std::vector<sf::CircleShape> &intersectionPoints,
                         bool &redrawIntersectionArea);
+
+void drawPolygons(std::vector<Polygon> &polygons, sf::RenderWindow &window);

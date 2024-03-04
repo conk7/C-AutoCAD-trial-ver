@@ -1,59 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include <sstream>
 #include <vector>
+#include <cmath>
+
 #include "..\include\grid.hpp"
 #include "..\include\polygon.hpp"
 #include "..\include\line.hpp"
 #include "..\include\movingVert.hpp"
 #include "..\include\polygons.hpp"
-#include <cmath>
-
-#define EPS 10e-3
-
-void drawPolygons(std::vector<Polygon> &polygons, sf::RenderWindow &window)
-{
-    for (auto &polygon : polygons)
-    {
-        std::vector<tLine> edges = polygon.getEdges();
-        for(auto &edge : edges)
-            window.draw(edge);
-    }
-    for (auto &polygon : polygons) //this loop is needed to avoid drawing vertices under edges
-    {
-        std::vector<sf::CircleShape> verts = polygon.getVerts();
-        for(auto &vert : verts)
-        {
-            window.draw(vert);
-        }
-    }
-}
-
-void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
-{
-    prevMousePos = currMousePos;
-    currMousePos = sf::Mouse::getPosition(window);
-    window.setView(view);
-    sf::Vector2f currMousePosF = window.mapPixelToCoords(currMousePos);
-    currMousePos = { static_cast<int>(currMousePosF.x), static_cast<int>(currMousePosF.y) };
-    window.setView(window.getDefaultView());
-
-}
-
-void updateMousePosWindow(sf::Vector2i &prevMousePos, sf::Vector2i &currMousePos,sf::RenderWindow &window, sf::View& view) 
-{
-    prevMousePos = currMousePos;
-    currMousePos = sf::Mouse::getPosition(window);
-}
-
-void zoomView(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY, float factor)
-{
-    sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-    view.zoom(factor);
-    sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-    const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
-    view.move(offsetCoords);
-    window.setView(view);
-}
+#include "..\include\mouse.hpp"
+#include "..\include\zoom.hpp"
 
 int main()
 {
@@ -262,7 +218,7 @@ int main()
             {
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
-                ss << "\n NOT MOVING VERT \n";
+                // ss << "\n NOT MOVING VERT \n";
             }
         }
        

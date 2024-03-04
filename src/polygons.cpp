@@ -2,6 +2,24 @@
 
 #define EPS 10e-3
 
+void drawPolygons(std::vector<Polygon> &polygons, sf::RenderWindow &window)
+{
+    for (auto &polygon : polygons)
+    {
+        std::vector<tLine> edges = polygon.getEdges();
+        for(auto &edge : edges)
+            window.draw(edge);
+    }
+    for (auto &polygon : polygons) //this loop is needed to avoid drawing vertices under edges
+    {
+        std::vector<sf::CircleShape> verts = polygon.getVerts();
+        for(auto &vert : verts)
+        {
+            window.draw(vert);
+        }
+    }
+}
+
 void drawIntersectionArea(sf::RenderWindow& window, std::vector<sf::CircleShape> &intersectionPoints)
 {
     sf::ConvexShape polygon;

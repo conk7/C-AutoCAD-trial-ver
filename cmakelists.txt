@@ -18,7 +18,9 @@ add_executable(CMakeSFMLProject
             src/polygons.cpp 
             src/line.cpp 
             src/algorithm.cpp 
-            src/movingVert.cpp)
+            src/movingVert.cpp
+            src/mouse.cpp
+            src/zoom.cpp)
             
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics)
 # target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
