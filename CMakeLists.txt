@@ -34,8 +34,8 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
-    include_directories(/usr/include/freetype2)
-    target_include_directories(CMakeSFMLProject PRIVATE /home/conk/Documents/cppAutoCAD/C-AutoCAD-trial-ver/include)
+    # include_directories(/usr/include/freetype2)
+    # target_include_directories(CMakeSFMLProject PRIVATE /home/conk/Documents/cppAutoCAD/C-AutoCAD-trial-ver/include)
     target_link_options(CMakeSFMLProject PRIVATE)
 endif(UNIX)
 
