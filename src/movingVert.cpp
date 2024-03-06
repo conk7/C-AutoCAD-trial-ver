@@ -1,4 +1,4 @@
-#include "..\include\movingVert.hpp"
+#include "../include/movingVert.hpp"
 
 MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coords, std::stringstream &ss)
 {

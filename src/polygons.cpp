@@ -1,4 +1,4 @@
-#include "..\include\polygons.hpp"
+#include "../include/polygons.hpp"
 
 #define EPS 10e-3
 

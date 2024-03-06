@@ -1,4 +1,4 @@
-#include "..\include\line.hpp"
+#include "../include/line.hpp"
 
 
 tLine::tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB)

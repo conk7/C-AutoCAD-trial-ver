@@ -1,4 +1,4 @@
-#include "..\include\mouse.hpp"
+#include "../include/mouse.hpp"
 
 void updateMousePosView(sf::Vector2i &prevMousePos,sf::Vector2i &currMousePos, sf::RenderWindow &window, sf::View &view)
 {
