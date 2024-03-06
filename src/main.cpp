@@ -3,13 +3,13 @@
 #include <vector>
 #include <cmath>
 
-#include "..\include\grid.hpp"
-#include "..\include\polygon.hpp"
-#include "..\include\line.hpp"
-#include "..\include\movingVert.hpp"
-#include "..\include\polygons.hpp"
-#include "..\include\mouse.hpp"
-#include "..\include\zoom.hpp"
+#include "../include/grid.hpp"
+#include "../include/polygon.hpp"
+#include "../include/line.hpp"
+#include "../include/movingVert.hpp"
+#include "../include/polygons.hpp"
+#include "../include/mouse.hpp"
+#include "../include/zoom.hpp"
 
 int main()
 {

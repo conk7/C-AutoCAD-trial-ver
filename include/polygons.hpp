@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "..\include\polygon.hpp"
+#include "../include/polygon.hpp"
 #include <sstream>
 
 void drawIntersectionArea(sf::RenderWindow& window, std::vector<sf::CircleShape> &intersectionPoints);

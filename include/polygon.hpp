@@ -2,9 +2,9 @@
 #include <vector>
 #include <array>
 #include <cmath>
-#include "..\include\line.hpp"
-#include "..\include\algorithm.hpp"
-#include "..\include\grid.hpp"
+#include "../include/line.hpp"
+#include "../include/algorithm.hpp"
+#include "../include/grid.hpp"
 
 class Polygon
 {

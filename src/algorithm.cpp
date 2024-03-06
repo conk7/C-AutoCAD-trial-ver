@@ -3,7 +3,7 @@
 #include <set>
 #include <cmath>
 #include <algorithm>
-#include "..\include\algorithm.hpp"
+#include "../include/algorithm.hpp"
 
 #define EPS 10e-3
 

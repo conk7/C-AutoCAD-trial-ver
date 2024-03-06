@@ -1,4 +1,4 @@
-#include "..\include\polygon.hpp"
+#include "../include/polygon.hpp"
 #include <sstream>
 
 struct MovingVert

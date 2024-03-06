@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include "..\include\polygon.hpp"
-#include "..\include\line.hpp"
+#include "../include/polygon.hpp"
+#include "../include/line.hpp"
 #include <cmath>
 
 #define EPS 10e-3

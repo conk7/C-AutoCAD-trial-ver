@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "..\include\grid.hpp"
+#include "../include/grid.hpp"
 #include <cmath>
 #include <sstream>
 
