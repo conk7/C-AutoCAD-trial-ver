@@ -48,13 +48,17 @@ float angle(Point a)
 {
     return (a.getY() - P.getY()) / sqrtf(pow(a.getX() - P.getX(), 2) + pow(a.getY() - P.getY(), 2));
 }
-bool f(Point a, Point b)
+float distance(Point p1, Point p2)
 {
-    if (angle(a) < angle(b)) return true;
-    return false;
-}
-float distance(Point p1, Point p2) {
     return sqrtf(pow(p1.getX() - p2.getX(), 2) + pow(p1.getY() - p2.getY(), 2));
+}
+bool f(Point a, Point b)
+{   
+    if (fabs(angle(a) - angle(b)) < EPS)
+    {
+        return distance(a, P) < distance(b, P);
+    }
+    return angle(a) < angle(b);
 }
 bool are_collinear(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2)
 {
