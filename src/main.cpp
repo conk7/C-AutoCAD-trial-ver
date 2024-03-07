@@ -18,7 +18,8 @@ int main()
     const uint16_t SCREENH = 1080;
 
     //creating and configuring the window
-    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));  // sf::Style::Fullscreen
+    static std::string WindowTitle = "52";
+    sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), WindowTitle, 7, sf::ContextSettings(24,8,8));  // sf::Style::Fullscreen
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
     static bool isFullscreen = false;
@@ -158,14 +159,14 @@ int main()
 
             if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
             {
-                window.create(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));
+                window.create(sf::VideoMode(SCREENW, SCREENH), WindowTitle, 7, sf::ContextSettings(24,8,8));
                 window.setVerticalSyncEnabled(true);
                 window.setKeyRepeatEnabled(false);
                 isFullscreen = false;
             }
             else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && !isFullscreen)
             {
-                window.create(sf::VideoMode(SCREENW, SCREENH), "52", sf::Style::Fullscreen, sf::ContextSettings(24,8,8));
+                window.create(sf::VideoMode(SCREENW, SCREENH), WindowTitle, sf::Style::Fullscreen, sf::ContextSettings(24,8,8));
                 window.setVerticalSyncEnabled(true);
                 window.setKeyRepeatEnabled(false);
                 isFullscreen = true;
