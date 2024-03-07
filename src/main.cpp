@@ -71,8 +71,10 @@ int main()
     std::vector<Polygon> polygons;
 
     //zoom
-    int counter = 0; 
-    const float zoomFactor = 1.1;
+    //int counter = 0; 
+    //const float zoomFactor = 1.1;
+
+    Zoom zoom(1.1, 12);
 
     //intersectionArea
     std::vector<Point> intersectionPointsCoords;
@@ -134,8 +136,8 @@ int main()
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
-                view.move((prevMousePosWindow.x - currMousePosWindow.x) * pow(1/zoomFactor, counter), 
-                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(1/zoomFactor, counter));
+                view.move((prevMousePosWindow.x - currMousePosWindow.x * pow(1/zoom.getFactor(), zoom.getCount())), 
+                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(1/zoom.getFactor(), zoom.getCount()));
             }
             else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
@@ -169,34 +171,40 @@ int main()
             }
             if (event.type == sf::Event::MouseWheelMoved)
             {
-                if (event.mouseWheel.delta > 0 && counter < 12) 
-                {
-                    if(counter > 12)
-                        counter = 12;
-                    counter += 1;
-                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                    zoomView(window, view, mousePos.x, mousePos.y, 1/zoomFactor);
-                }
-                if (event.mouseWheel.delta < 0 && counter > -12) 
-                  {
-                    if(counter < -12)
-                        counter = -12;
-                    counter -= 1;
-                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                    zoomView(window, view, mousePos.x, mousePos.y, zoomFactor);
-                }
+                // if (event.mouseWheel.delta > 0 && counter < 12) 
+                // {
+                //     if(counter > 12)
+                //         counter = 12;
+                //     counter += 1;
+                //     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                //     zoomView(window, view, mousePos.x, mousePos.y, 1/zoomFactor);
+                // }
+                // if (event.mouseWheel.delta < 0 && counter > -12) 
+                //   {
+                //     if(counter < -12)
+                //         counter = -12;
+                //     counter -= 1;
+                //     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                //     zoomView(window, view, mousePos.x, mousePos.y, zoomFactor);
+                // }
+
+                if (event.mouseWheel.delta > 0)
+                    zoom.zoomIn(window, view);
+                else if (event.mouseWheel.delta < 0)
+                    zoom.zoomOut(window, view);
             }
             if (event.type == sf::Event::Resized)
             {
-                sf::View newView;
-                auto newSize = window.getSize();
-                newView.setSize(newSize.x, newSize.y);
-                if(counter > 0)
-                    newView.zoom(pow(1/zoomFactor,counter));
-                else if(counter < 0)
-                    newView.zoom(pow(zoomFactor,-counter));
-                newView.setCenter(view.getCenter());
-                view = newView;
+                // sf::View newView;
+                // auto newSize = window.getSize();
+                // newView.setSize(newSize.x, newSize.y);
+                // if(counter > 0)
+                //     newView.zoom(pow(1/zoomFactor,counter));
+                // else if(counter < 0)
+                //     newView.zoom(pow(zoomFactor,-counter));
+                // newView.setCenter(view.getCenter());
+                // view = newView;
+                zoom.zoomSet(window, view);
             }  
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                          !isVertMoving)
@@ -242,7 +250,7 @@ int main()
         //render game elements
         window.setView(view);
        
-        grid.draw_axes(window, view, counter, ss);
+        grid.draw_axes(window, view, zoom.getCount(), ss);
         window.draw(tileSelector);
 
         getIntersectionPoints(intersectionPointsCoords, intersectionPoints, redrawIntersectionArea);
@@ -260,6 +268,5 @@ int main()
         window.display();
         //render ends
     }
-
     return 0;
 }

@@ -42,7 +42,8 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid)
     {
         float radius = 5;
         if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
-            abs(coordsF.y - verts[0].getPosition().y - radius) < EPS)
+            abs(coordsF.y - verts[0].getPosition().y - radius) < EPS &&
+            verts.size() >= 3)
         {
             edges[edges.size() - 1].updatePointB(coordsF);
             dynamicEdge = false;
