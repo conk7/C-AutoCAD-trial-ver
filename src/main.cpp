@@ -136,8 +136,10 @@ int main()
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
-                view.move((prevMousePosWindow.x - currMousePosWindow.x * pow(1/zoom.getFactor(), zoom.getCount())), 
-                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(1/zoom.getFactor(), zoom.getCount()));
+                float factor = 1/zoom.getFactor();
+                int counter = zoom.getCount();
+                view.move((prevMousePosWindow.x - currMousePosWindow.x) * pow(factor, counter), 
+                          (prevMousePosWindow.y - currMousePosWindow.y) * pow(factor, counter));
             }
             else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {

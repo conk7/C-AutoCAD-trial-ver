@@ -63,32 +63,33 @@ void Zoom::zoomOut(sf::RenderWindow& window, sf::View& view)
 
 void Zoom::zoomSet(sf::RenderWindow& window, sf::View& view)
 {
-    // sf::View newView;
-    auto newSize = window.getSize();
-    view.setSize(newSize.x, newSize.y);
-
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     int mouseX = mousePos.x, mouseY = mousePos.y;
 
+    sf::View newView;
+    auto newSize = window.getSize();
+    newView.setSize(newSize.x, newSize.y);
+
     if(zoomCount > 0)
     {
-        sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-        view.zoom(pow(1/zoomFactor,zoomCount));
-        sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+        sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), newView);
+        newView.zoom(pow(1/zoomFactor,zoomCount));
+        sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), newView);
         const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
-        view.move(offsetCoords);
-        window.setView(view);
+        newView.move(offsetCoords);
     }
     else if(zoomCount < 0)
     {
-        sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-        view.zoom(pow(zoomFactor,-zoomCount));
-        sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+        sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), newView);
+        newView.zoom(pow(zoomFactor,-zoomCount));
+        sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), newView);
         const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
-        view.move(offsetCoords);
-        window.setView(view);
+        newView.move(offsetCoords);
     }
-    view.setCenter(view.getCenter());
+    // window.setView(newView);
+    newView.setCenter(view.getCenter());
+    view = newView;
+    // view.setCenter(view.getCenter());
     // view = newView;
 }
 
