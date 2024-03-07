@@ -21,7 +21,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));  // sf::Style::Fullscreen
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
-    bool isFullscreen = false;
+    static bool isFullscreen = false;
     
     //grid
     Grid grid(100.f);
@@ -36,19 +36,6 @@ int main()
     view.setCenter(0,0);
     view.setSize(window.getSize().x, window.getSize().y);
     sf::View visibleArea (sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-
-    //mouse
-    sf::Vector2i mousePosScreen;
-    sf::Vector2i mousePosWindow;
-    sf::Vector2f mousePosView;
-    sf::Vector2i mousePosGrid;
-
-    sf::Vector2i prevMousePosView;
-    sf::Vector2i currMousePosView;
-    sf::Vector2i currMousePosWindow;
-    sf::Vector2i prevMousePosWindow;
-
-    bool isMouseButtonPressed = false;
 
     //debug info
     sf::Font font;
@@ -67,12 +54,7 @@ int main()
     tileSelector.setOutlineColor(sf::Color::Blue);
     tileSelector.setOutlineThickness(3);
   
-
     std::vector<Polygon> polygons;
-
-    //zoom
-    //int counter = 0; 
-    //const float zoomFactor = 1.1;
 
     Zoom zoom(1.1, 12);
 
@@ -97,6 +79,10 @@ int main()
                             static_cast<float>(window.getSize().y)));
 
         //update mouse pos
+        static sf::Vector2i prevMousePosView;
+        static sf::Vector2i currMousePosView;
+        static sf::Vector2i currMousePosWindow;
+        static sf::Vector2i prevMousePosWindow;
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
         updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
 
@@ -106,6 +92,11 @@ int main()
         {
             polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
         }
+
+        static sf::Vector2i mousePosScreen;
+        static sf::Vector2i mousePosWindow;
+        static sf::Vector2f mousePosView;
+        static sf::Vector2i mousePosGrid;
 
         mousePosScreen = sf::Mouse::getPosition();
         mousePosWindow = sf::Mouse::getPosition(window);
@@ -133,6 +124,8 @@ int main()
             if(event.type == sf::Event::Closed)
                 window.close();
 
+            
+            static bool isMouseButtonPressed = false;
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
@@ -161,14 +154,20 @@ int main()
                     isMouseButtonPressed = false;
                 }
             }
+
+
             if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
             {
                 window.create(sf::VideoMode(SCREENW, SCREENH), "52", 7, sf::ContextSettings(24,8,8));
+                window.setVerticalSyncEnabled(true);
+                window.setKeyRepeatEnabled(false);
                 isFullscreen = false;
             }
             else if(event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && !isFullscreen)
             {
                 window.create(sf::VideoMode(SCREENW, SCREENH), "52", sf::Style::Fullscreen, sf::ContextSettings(24,8,8));
+                window.setVerticalSyncEnabled(true);
+                window.setKeyRepeatEnabled(false);
                 isFullscreen = true;
             }
             if (event.type == sf::Event::MouseWheelMoved)
