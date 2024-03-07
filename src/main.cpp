@@ -85,8 +85,7 @@ int main()
         static sf::Vector2i currMousePosWindow;
         static sf::Vector2i prevMousePosWindow;
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
-        updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
-
+        // updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view); 
         
 
         if(polygons.size() > 0)
@@ -110,16 +109,19 @@ int main()
         //update ui
         std::stringstream ss;
         // ss << "Screen: " << mousePosScreen.x << " " << mousePosScreen.y << "\n"
-        //     << "Window: " << mousePosWindow.x << " " << mousePosWindow.y << "\n"
-        //     << "View: " << mousePosView.x << " " << mousePosView.y << "\n"
-        //     << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
-        //     << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
+        //      << "Window: " << mousePosWindow.x << " " << mousePosWindow.y << "\n"
+        //      << "View: " << mousePosView.x << " " << mousePosView.y << "\n"
+        //      << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
+        //      << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
 
         ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
+        
 
 
         //event loop
         sf::Event event;
+        updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
+        ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
         while (window.pollEvent(event))
         {
             if(event.type == sf::Event::Closed)
@@ -132,6 +134,7 @@ int main()
                 isMouseButtonPressed = false;
                 float factor = 1/zoom.getFactor();
                 int counter = zoom.getCount();
+                auto temp = sf::Mouse::getPosition(window);
                 view.move((prevMousePosWindow.x - currMousePosWindow.x) * pow(factor, counter), 
                           (prevMousePosWindow.y - currMousePosWindow.y) * pow(factor, counter));
             }
