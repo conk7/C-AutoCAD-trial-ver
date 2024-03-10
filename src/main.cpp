@@ -127,7 +127,6 @@ int main()
             if(event.type == sf::Event::Closed)
                 window.close();
 
-            
             static bool isMouseButtonPressed = false;
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
@@ -159,7 +158,6 @@ int main()
                 }
             }
 
-
             if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
             {
                 window.create(sf::VideoMode(SCREENW, SCREENH), WindowTitle, 7, sf::ContextSettings(24,8,8));
@@ -176,23 +174,6 @@ int main()
             }
             if (event.type == sf::Event::MouseWheelMoved)
             {
-                // if (event.mouseWheel.delta > 0 && counter < 12) 
-                // {
-                //     if(counter > 12)
-                //         counter = 12;
-                //     counter += 1;
-                //     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                //     zoomView(window, view, mousePos.x, mousePos.y, 1/zoomFactor);
-                // }
-                // if (event.mouseWheel.delta < 0 && counter > -12) 
-                //   {
-                //     if(counter < -12)
-                //         counter = -12;
-                //     counter -= 1;
-                //     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                //     zoomView(window, view, mousePos.x, mousePos.y, zoomFactor);
-                // }
-
                 if (event.mouseWheel.delta > 0)
                     zoom.zoomIn(window, view);
                 else if (event.mouseWheel.delta < 0)
@@ -200,15 +181,6 @@ int main()
             }
             if (event.type == sf::Event::Resized)
             {
-                // sf::View newView;
-                // auto newSize = window.getSize();
-                // newView.setSize(newSize.x, newSize.y);
-                // if(counter > 0)
-                //     newView.zoom(pow(1/zoomFactor,counter));
-                // else if(counter < 0)
-                //     newView.zoom(pow(zoomFactor,-counter));
-                // newView.setCenter(view.getCenter());
-                // view = newView;
                 zoom.zoomSet(window, view);
             }  
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
@@ -217,27 +189,21 @@ int main()
                 movingVertIdx = findPolygonIdxOfVert(polygons, mousePosView, ss);
                 if(movingVertIdx.polygonIdx != -1 && movingVertIdx.vertIdx != -1)
                     isVertMoving = true;
-                // ss << "\n CHEKING VERT \n";
-                // ss << "Vert moving " << isVertMoving << "\n";
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {
                 moveVert(polygons, grid, movingVertIdx, mousePosView);
-                // ss << "\n MOVING VERT \n";
             }
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
-                // ss << "\n NOT MOVING VERT \n";
             }
         }
        
-        // Calling Alexey's function
         findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
-
 
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());

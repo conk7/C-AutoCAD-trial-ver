@@ -7,16 +7,14 @@ void drawPolygons(std::vector<Polygon> &polygons, sf::RenderWindow &window)
     for (auto &polygon : polygons)
     {
         std::vector<tLine> edges = polygon.getEdges();
-        for(auto &edge : edges)
+        for(auto &edge : polygon.getEdges())
             window.draw(edge);
     }
-    for (auto &polygon : polygons) //this loop is needed to avoid drawing vertices under edges
+    for (auto &polygon : polygons) //this loop is necessary to avoid drawing vertices under edges
     {
         std::vector<sf::CircleShape> verts = polygon.getVerts();
         for(auto &vert : verts)
-        {
             window.draw(vert);
-        }
     }
 }
 
@@ -116,11 +114,9 @@ void findIntersectionPoints(std::vector<Polygon> polygons,
 
     if(equals)
         return;
-    else
-    {
-        intersectionPointsCoords = newintersectionPointsCoords;
-        redrawIntersectionArea = true;
-    }
+
+    intersectionPointsCoords = newintersectionPointsCoords;
+    redrawIntersectionArea = true;
 
 }
 
@@ -130,8 +126,8 @@ void getIntersectionPoints(std::vector<Point> intersectionPointsCoords,
 {
     if(!redrawIntersectionArea) 
     {
-        intersectionPointsCoords.clear(); 
-        redrawIntersectionArea = false; 
+        // intersectionPointsCoords.clear(); 
+        // redrawIntersectionArea = false; 
         return;
     }
 

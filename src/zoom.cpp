@@ -1,24 +1,16 @@
 #include "../include/zoom.hpp"
 
-// void Zoom::zoomView(sf::RenderWindow& window, sf::View& view, int mouseX, int mouseY)
-// {
-//     sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-//     view.zoom(zoomFactor);
-//     sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-//     const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
-//     view.move(offsetCoords);
-//     window.setView(view);
-// }
-
 Zoom::Zoom()
 {
     zoomFactor = 1.1;
+    zoomCount = 0;
     zoomLimit = 12;
 }
 
 Zoom::Zoom(float zoomFactor, int zoomLimit)
 {
     this->zoomFactor = zoomFactor;
+    this->zoomCount = 0;
     this->zoomLimit = zoomLimit;
 }
 
