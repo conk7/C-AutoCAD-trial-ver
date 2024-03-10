@@ -66,10 +66,7 @@ void Zoom::zoomSet(sf::RenderWindow& window, sf::View& view)
     auto newSize = window.getSize();
     view.setSize(newSize.x, newSize.y);
 
-    if(zoomCount > 0)
-        view.zoom(pow(zoomFactor,zoomCount));
-    else if(zoomCount < 0)
-        view.zoom(pow(1/zoomFactor,zoomCount));
+    view.zoom(pow(1/zoomFactor,zoomCount));
 
     view.setCenter(view.getCenter());
 }
