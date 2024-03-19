@@ -6,7 +6,6 @@
 #include "../include/algorithm.hpp"
 
 #define EPS 1e-3
-
 Point::Point(float x1, float y1)
 {
     this->x = x1;
@@ -46,7 +45,7 @@ void Point::setY(float y)
 
 float angle(Point a)
 {
-    return (a.getY() - P.getY()) / sqrtf(pow(a.getX() - P.getX(), 2) + pow(a.getY() - P.getY(), 2));
+     return (a.getY() - P.getY()) / sqrtf(pow(a.getX() - P.getX(), 2) + pow(a.getY() - P.getY(), 2));
 }
 float distance(Point p1, Point p2)
 {
@@ -54,9 +53,9 @@ float distance(Point p1, Point p2)
 }
 bool f(Point a, Point b)
 {   
-    if (fabs(angle(a) - angle(b)) < EPS)
+    if (are_collinear({P,a}, {P,b}))
     {
-        return distance(a, P) < distance(b, P);
+        return distance(a, P) > distance(b, P);
     }
     return angle(a) < angle(b);
 }
@@ -90,6 +89,49 @@ bool are_collinear(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2)
     }
     return false;
 }
+float Rotate(std::pair<Point, Point> a, std::pair<Point, Point> b)
+{
+    return (a.second.getX() - a.first.getX()) * (b.second.getY() - b.first.getY()) - (a.second.getY() - a.first.getY()) * (b.second.getX() - b.first.getX());
+}
+bool IsConvex(std::vector<Point> fig)
+{   
+    int n = fig.size();
+    if (n <= 3)
+    {
+        return true;
+    }
+    fig.push_back(fig[0]);
+    float det_prev = 0;
+    bool flag = false;
+    for (int i = 1; i < n; i++)
+    {
+        if (are_collinear({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] }))
+        {
+            if (distance(fig[i - 1], fig[i]) > distance(fig[i - 1], fig[i + 1]))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            float det_tek = Rotate({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] });
+            if (sign(det_prev) != sign(det_tek) && flag)
+            {
+                return false;
+            }
+            else if (!flag)
+            {
+                det_prev = det_tek;
+                flag = true;
+            }
+            else
+            {
+                det_prev = det_tek;
+            }
+        }
+    }
+    return true;
+}
 std::vector<Point> convex_hull(std::vector<Point> points)
 {
     int n = points.size();
@@ -98,10 +140,18 @@ std::vector<Point> convex_hull(std::vector<Point> points)
         return points;
     }
     int min_ind = 0;
-    Point minr = Point(1e10, 0);
+    Point minr = Point(1e10, 1e10);
     for (int i = 0; i < n; i++)
     {
-        if (points[i].getX() < minr.getX())
+        if (fabs(points[i].getX() - minr.getX()) < EPS)
+        {
+            if (points[i].getY() < minr.getY())
+            {
+                minr = points[i];
+                min_ind = i;
+            }
+        }
+        else if (points[i].getX() < minr.getX())
         {
             minr = points[i];
             min_ind = i;
@@ -111,7 +161,7 @@ std::vector<Point> convex_hull(std::vector<Point> points)
     std::swap(points[0], points[min_ind]);
     auto it = points.begin();
     it++;
-    sort(it, points.end(), f);
+    std::sort(it, points.end(), f);
     std::vector<Point> a;
     for (int i = 0; i < n; i++)
     {
@@ -129,20 +179,28 @@ std::vector<Point> convex_hull(std::vector<Point> points)
             a.push_back(points[i]);
         }
     }
-    // for (int i = 0; i < n - 1; i++)
-    // {
-    //     if (fabs(points[i].getX() - points[i + 1].getX()) >= EPS  || fabs(points[i].getY() - points[i + 1].getY()) >= EPS)
-    //     {
-    //         a.push_back(points[i]);
-    //         count++;
-    //     }
-    // }
-    // if (fabs(points[n - 1].getX() - points[n - 2].getX()) >= EPS  || fabs(points[n - 1].getY() - points[n - 2].getY()) >= EPS)
-    // {
-    //     a.push_back(points[n - 1]);
-    // }
-    // a.resize(count + 1);
-    return a;
+    if (a.size() <= 2)
+    {
+        return a;
+    }
+    a.push_back(a[0]);
+    std::vector<Point> st = {a[0], a[1]};
+    for (int i = 2; i < a.size(); i++)
+    {
+        if (are_collinear({st[st.size() - 1], st[st.size() - 2]}, {st[st.size() - 1], a[i]}))
+        {
+            if (distance(st[st.size() - 2], st[st.size() - 1]) < distance(st[st.size() - 2], a[i]))
+            {
+                st[st.size() - 1] = a[i];
+            }
+        }
+        else
+        {
+            st.push_back(a[i]);
+        }
+    }
+    st.pop_back();
+    return st;
 }
 void per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res)
 {
@@ -169,6 +227,7 @@ bool is_inside(std::vector<Point> fig, Point p)
 {
     Vector prev = Point( fig[0].getX() - p.getX(), fig[0].getY() - p.getY() );
     float det_prev = 0;
+    bool flag = true;
     fig.push_back(fig[0]);
     for (int i = 1; i < fig.size(); i++)
     {   
@@ -178,11 +237,11 @@ bool is_inside(std::vector<Point> fig, Point p)
         }
         if (are_collinear({ p, fig[i - 1] }, { p, fig[i] }))
         {
-            return false;
+            flag = false;
         }
         Vector tek = Point( fig[i].getX() - p.getX(), fig[i].getY() - p.getY() );
         float det_tek = tek.getX() * prev.getY() - tek.getY() * prev.getX();
-        if (i != 1)
+        if (i != 1 && flag)
         {
             if (sign(det_prev) != sign(det_tek))
             {
@@ -191,13 +250,13 @@ bool is_inside(std::vector<Point> fig, Point p)
             det_prev = det_tek;
             prev = tek;
         }
-        else if (i==1)
+        else if (i == 1)
         {
             det_prev = det_tek;
             prev = tek;
         }
     }
-    return true;
+    return flag;
 }
 std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector<Point> fig2)
 {
