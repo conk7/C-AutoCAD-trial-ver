@@ -12,13 +12,31 @@ Polygon::Polygon()
     finished = true;
 }
 
-void Polygon::addVert(sf::Vector2i coords, Grid grid)
+void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss)
 {
     float const gridSizeF = grid.getGridSizeF();
     unsigned const gridSize = grid.getGridSizeU();
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
     coords = sf::Vector2i(round(coordsF.x / gridSizeF) * gridSize, round(coordsF.y / gridSizeF) * gridSize);
     coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
+    
+    std::vector<Point> verts_as_points;
+    Point temp_point;
+    for (int k = 0; k < verts.size(); k++){
+        temp_point = {verts[k].getPosition().x, verts[k].getPosition().y};
+        verts_as_points.push_back(temp_point);
+        if (k == verts.size()-1){
+            float const radius = 5;
+            sf::CircleShape circle(radius);
+            circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
+            Point temp_new_point = { circle.getPosition().x, circle.getPosition().y};
+            verts_as_points.push_back(temp_new_point);
+        }
+    }
+
+    bool flagConvex = IsConvex(verts_as_points);
+    
+    ss << flagConvex << "\n";
 
     if(verts.size() == 0)
     {
@@ -35,7 +53,22 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid)
 
         return;
     }
-    else if(verts.size() > 0)
+    else if( verts.size() == 1 || verts.size() == 2 ){
+        float const radius = 5;
+        sf::CircleShape circle(radius);
+        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
+        if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
+            abs(coordsF.y - verts[0].getPosition().y - radius) < EPS)
+            {
+            finished = true;
+            dynamicEdge = false;
+            verts[0].setFillColor(sf::Color::Red);
+            return;
+        } 
+    }
+    
+
+    if(verts.size() >= 0)
     {
         float const radius = 5;
         if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
