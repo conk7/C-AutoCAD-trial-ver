@@ -147,13 +147,13 @@ int main()
                 if(polygons.size() == 0 || polygons.size() != 0 && polygons[polygons.size() - 1].isFinished())
                 {
                     Polygon polygon;
-                    polygon.addVert(currMousePosView, grid);
+                    polygon.addVert(currMousePosView, grid, ss);
                     polygons.push_back(polygon);
                     isMouseButtonPressed = false;
                 }
                 else if (polygons.size() != 0 && !polygons[polygons.size() - 1].isFinished())
                 {
-                    polygons[polygons.size() - 1].addVert(currMousePosView, grid);
+                    polygons[polygons.size() - 1].addVert(currMousePosView, grid, ss);
                     isMouseButtonPressed = false;
                 }
             }
@@ -193,7 +193,8 @@ int main()
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {
-                moveVert(polygons, grid, movingVertIdx, mousePosView);
+                moveVert(polygons, grid, movingVertIdx, mousePosView, ss);
+                ss << polygons[movingVertIdx.polygonIdx].getVerts().size();
             }
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)

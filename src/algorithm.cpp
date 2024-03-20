@@ -101,9 +101,10 @@ bool IsConvex(std::vector<Point> fig)
         return true;
     }
     fig.push_back(fig[0]);
+    fig.push_back(fig[1]);
     float det_prev = 0;
     bool flag = false;
-    for (int i = 1; i < n; i++)
+    for (int i = 1; i < n + 1; i++)
     {
         if (are_collinear({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] }))
         {

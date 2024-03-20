@@ -1,5 +1,7 @@
 #include "../include/movingVert.hpp"
 
+#define EPS 10e-3
+
 MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coords, std::stringstream &ss)
 {
     auto coordsF = coords;
@@ -22,7 +24,7 @@ MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coo
     return {-1, -1};
 }
 
-void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView)
+void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView, std::stringstream &ss)
 {
     int i = vert.polygonIdx, j = vert.vertIdx;
 
@@ -32,6 +34,27 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
     sf::Vector2f newPos = { round(mousePosView.x/gridSizeF) * gridSizeF, round(mousePosView.y/gridSizeF) * gridSizeF };
     sf::Vector2f newPosRadius = { round(mousePosView.x/gridSizeF) * gridSizeF - radius, round(mousePosView.y/gridSizeF) * gridSizeF - radius};
     verts[j].setPosition(newPosRadius);
+    for (int k = 0; k < verts.size(); ++k){
+        if (k != j){
+            if(abs(verts[k].getPosition().x - verts[j].getPosition().x) < EPS &&
+            abs(verts[k].getPosition().y - verts[j].getPosition().y) < EPS){
+                return;
+            }
+        }
+    }
+    std::vector<Point> verts_as_points;
+    Point temp_point;
+    for (int k = 0; k < verts.size(); k++){
+        temp_point = {verts[k].getPosition().x, verts[k].getPosition().y};
+        verts_as_points.push_back(temp_point);
+    }
+
+    bool flagConvex = IsConvex(verts_as_points);
+
+    ss << flagConvex << "\n";
+    if (!flagConvex){
+        return;
+    }
     polygons[i].setVerts(verts);
 
     auto edges = polygons[i].getEdges();
