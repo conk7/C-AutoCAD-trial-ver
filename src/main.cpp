@@ -88,10 +88,6 @@ int main()
         // updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view); 
         
 
-        if(polygons.size() > 0)
-        {
-            polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
-        }
 
         static sf::Vector2i mousePosScreen;
         static sf::Vector2i mousePosWindow;
@@ -117,6 +113,10 @@ int main()
         ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
         
 
+        if(polygons.size() > 0)
+        {
+            polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
+        }
 
         //event loop
         sf::Event event;
