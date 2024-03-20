@@ -14,20 +14,28 @@ FetchContent_MakeAvailable(SFML)
 add_executable(CMakeSFMLProject 
             src/main.cpp 
             src/grid.cpp 
-            src/shape.cpp 
+            src/polygon.cpp 
+            src/polygons.cpp 
             src/line.cpp 
             src/algorithm.cpp 
-            src/isOnVerts.cpp
-            )
+            src/movingVert.cpp
+            src/mouse.cpp
+            src/zoom.cpp)
             
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-window sfml-system)
-target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
+# target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
 
 if(WIN32)
+    # add_custom_command(
+    #     TARGET CMakeSFMLProject
+        # PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:CMakeSFMLProject>
+        # VERBATIM)
     target_link_options(CMakeSFMLProject PRIVATE -mwindows)
 endif(WIN32)
 
 if(UNIX)
+    # include_directories(/usr/include/freetype2)
+    # target_include_directories(CMakeSFMLProject PRIVATE /home/conk/Documents/cppAutoCAD/C-AutoCAD-trial-ver/include)
     target_link_options(CMakeSFMLProject PRIVATE)
 endif(UNIX)
 

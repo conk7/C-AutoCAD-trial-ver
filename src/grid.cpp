@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include "..\include\grid.hpp"
-#include <math.h>
+#include "../include/grid.hpp"
+#include <cmath>
 #include <sstream>
 
 Grid::Grid()
@@ -40,7 +40,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &
         gridIdx += gridSizeU;
     }
     
-    ss << zoomFactor << ' ' << counter <<  '\n';
+    ss << "ZoomFactor " << zoomFactor << "; ZoomCounter " << counter <<  '\n';
 
     gridIdx = gridBottomBorder;
     while (gridIdx >= gridTopBorder)
