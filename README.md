@@ -1,1 +1,1 @@
-Эта ветка содержит версию проекта на 29.02.24, то есть до момента расширения задания на случай n-угольников.
+The application finds and visually shows the area of the intersection of arbitrary placed convex polygons.
