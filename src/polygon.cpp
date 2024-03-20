@@ -36,6 +36,7 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss)
 
     bool flagConvex = IsConvex(verts_as_points);
     
+    
     ss << flagConvex << "\n";
 
     if(verts.size() == 0)
@@ -53,19 +54,19 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss)
 
         return;
     }
-    else if( verts.size() == 1 || verts.size() == 2 ){
-        float const radius = 5;
-        sf::CircleShape circle(radius);
-        circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-        if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
-            abs(coordsF.y - verts[0].getPosition().y - radius) < EPS)
-            {
-            finished = true;
-            dynamicEdge = false;
-            verts[0].setFillColor(sf::Color::Red);
-            return;
-        } 
-    }
+    // else if( verts.size() == 1 || verts.size() == 2 ){
+    //     float const radius = 5;
+    //     sf::CircleShape circle(radius);
+    //     circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
+    //     if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
+    //         abs(coordsF.y - verts[0].getPosition().y - radius) < EPS)
+    //         {
+    //         finished = true;
+    //         dynamicEdge = false;
+    //         verts[0].setFillColor(sf::Color::Red);
+    //         return;
+    //     } 
+    // }
     
 
     if(verts.size() >= 0)
@@ -86,11 +87,20 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss)
 
             return;
         }
-        else
+        else if (!flagConvex)
         {
+            return;
+        }
+        else {
             sf::CircleShape circle(radius);
             circle.setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
             circle.setFillColor(sf::Color::Red);
+            for (int k = 0; k < verts.size(); ++k){
+                if(abs(verts[k].getPosition().x - circle.getPosition().x) < EPS &&
+                abs(verts[k].getPosition().y - circle.getPosition().y) < EPS){
+                    return;
+                }
+            }
             verts.push_back(circle);
 
             edges[edges.size() - 1].updatePointB(coordsF);
@@ -113,6 +123,31 @@ void Polygon::updateDynamicEdge(Grid grid, sf::Vector2i coords)
     sf::Vector2f coordsF = sf::Vector2f(static_cast<float>(coords.x), static_cast<float>(coords.y));
     coordsF = sf::Vector2f(round(coordsF.x / gridSizeF) * gridSize, round(coordsF.y / gridSizeF) * gridSize);
     edges[edges.size() - 1].updatePointB(coordsF);
+    
+    std::vector<Point> verts_as_points;
+    Point temp_point;
+    for (int k = 0; k < verts.size(); k++){
+        temp_point = {verts[k].getPosition().x, verts[k].getPosition().y};
+        verts_as_points.push_back(temp_point);
+        if (k == verts.size()-1){
+            float const radius = 5;
+            sf::CircleShape circle(radius);
+            circle.setPosition(sf::Vector2f(coordsF.x, coordsF.y));
+            Point temp_new_point = { circle.getPosition().x, circle.getPosition().y};
+            verts_as_points.push_back(temp_new_point);
+        }
+    }
+
+    bool flagConvex = IsConvex(verts_as_points);
+    
+    if (flagConvex)
+    {
+        edges[edges.size() - 1].setColor(sf::Color(105,105,105,255));
+    }
+    else{
+        edges[edges.size() - 1].setColor(sf::Color(255,36,0,255));
+    }
+
 }
 
 std::vector<tLine> Polygon::getEdges() const

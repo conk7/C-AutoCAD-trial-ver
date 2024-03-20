@@ -42,9 +42,6 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
             }
         }
     }
-    polygons[i].setVerts(verts);
-
-
     std::vector<Point> verts_as_points;
     Point temp_point;
     for (int k = 0; k < verts.size(); k++){
@@ -54,7 +51,11 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
 
     bool flagConvex = IsConvex(verts_as_points);
 
-    ss << flagConvex << "  "<< verts[0].getPosition().x<< "\n";
+    ss << flagConvex << "\n";
+    if (!flagConvex){
+        return;
+    }
+    polygons[i].setVerts(verts);
 
     auto edges = polygons[i].getEdges();
     if(j == 0)
