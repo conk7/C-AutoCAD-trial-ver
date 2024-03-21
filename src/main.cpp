@@ -12,7 +12,8 @@
 #include "../include/zoom.hpp"
 
 int main()
-{
+{   
+    bool action = false;
     //default window width and height
     const uint16_t SCREENW = 1920;
     const uint16_t SCREENH = 1080;
@@ -117,7 +118,7 @@ int main()
         {
             polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
         }
-
+        action = false;
         //event loop
         sf::Event event;
         updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
@@ -147,13 +148,13 @@ int main()
                 if(polygons.size() == 0 || polygons.size() != 0 && polygons[polygons.size() - 1].isFinished())
                 {
                     Polygon polygon;
-                    polygon.addVert(currMousePosView, grid, ss);
+                    polygon.addVert(currMousePosView, grid, ss, action);
                     polygons.push_back(polygon);
                     isMouseButtonPressed = false;
                 }
                 else if (polygons.size() != 0 && !polygons[polygons.size() - 1].isFinished())
                 {
-                    polygons[polygons.size() - 1].addVert(currMousePosView, grid, ss);
+                    polygons[polygons.size() - 1].addVert(currMousePosView, grid, ss, action);
                     isMouseButtonPressed = false;
                 }
             }
@@ -195,17 +196,19 @@ int main()
             {
                 moveVert(polygons, grid, movingVertIdx, mousePosView, ss);
                 ss << polygons[movingVertIdx.polygonIdx].getVerts().size();
+                action = true;
             }
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
-            {
+            {   action = false;
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
             }
         }
-       
-        findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
-
+        if (action)
+        {
+            findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
+        }
         mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 

@@ -12,7 +12,7 @@ Polygon::Polygon()
     finished = true;
 }
 
-void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss)
+void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss, bool &action)
 {
     float const gridSizeF = grid.getGridSizeF();
     unsigned const gridSize = grid.getGridSizeU();
@@ -90,6 +90,7 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss)
             edges[edges.size() - 1].updatePointB(coordsF);
             dynamicEdge = false;
             finished = true;
+            action = true;
 
             for (auto &vert : verts)
                 vert.setFillColor(sf::Color::Red);
