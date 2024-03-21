@@ -93,14 +93,50 @@ float Rotate(std::pair<Point, Point> a, std::pair<Point, Point> b)
 {
     return (a.second.getX() - a.first.getX()) * (b.second.getY() - b.first.getY()) - (a.second.getY() - a.first.getY()) * (b.second.getX() - b.first.getX());
 }
-bool IsConvex(std::vector<Point> fig)
+bool IsConvex(std::vector<Point> fig)//АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
 {   
+    if (fig.size()>=2)
+    {
+        if (fabs(fig[0].getX() - fig[fig.size() - 1].getX()) < EPS &&
+        fabs(fig[0].getY() - fig[fig.size() - 1].getY()) < EPS)
+        {
+            fig.pop_back();
+        }
+    }
     int n = fig.size();
+    if (n < 3)
+    {
+        return true;
+    }
+    for (int i = 1; i < n - 1; i++)
+    {
+        if (are_collinear({fig[i - 1], fig[i]}, {fig[i], fig[i + 1]}) 
+        && distance(fig[i + 1], fig[i]) > distance(fig[i - 1], fig[i + 1]))
+        {
+            return false;
+        }
+    }
     if (n <= 3)
     {
         return true;
     }
     fig.push_back(fig[0]);
+    // std::vector<Point> st = {fig[0], fig[1]};
+    // for (int i = 2; i < fig.size(); i++)
+    // {
+    //     if (are_collinear({st[st.size() - 1], st[st.size() - 2]}, {st[st.size() - 1], fig[i]}))
+    //     {
+    //         if (distance(st[st.size() - 2], st[st.size() - 1]) < distance(st[st.size() - 2], fig[i]))
+    //         {
+    //             st[st.size() - 1] = fig[i];
+    //         }
+    //     }
+    //     else
+    //     {
+    //         st.push_back(fig[i]);
+    //     }
+    // }
+    // fig = st;
     fig.push_back(fig[1]);
     float det_prev = 0;
     bool flag = false;
@@ -108,7 +144,8 @@ bool IsConvex(std::vector<Point> fig)
     {
         if (are_collinear({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] }))
         {
-            if (distance(fig[i - 1], fig[i]) > distance(fig[i - 1], fig[i + 1]))
+            if (distance(fig[i - 1], fig[i]) > distance(fig[i - 1], fig[i + 1])
+             && i !=n && i!=n-1)
             {
                 return false;
             }
