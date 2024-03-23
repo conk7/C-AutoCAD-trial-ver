@@ -13,7 +13,6 @@
 
 int main()
 {   
-    bool action = false;
     //default window width and height
     const uint16_t SCREENW = 1920;
     const uint16_t SCREENH = 1080;
@@ -118,11 +117,13 @@ int main()
         {
             polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
         }
-        action = false;
-        //event loop
+        static bool action = false;
+
         sf::Event event;
         updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
         ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
+
+        //event loop
         while (window.pollEvent(event))
         {
             if(event.type == sf::Event::Closed)
@@ -204,16 +205,24 @@ int main()
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
             }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Delete))
+            {
+                polygons.clear();
+                intersectionPoints.clear();
+                intersectionPointsCoords.clear();
+                redrawIntersectionArea = true;
+            }
         }
-        if (action)
-        {
-            findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
-        }
-        mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
-        mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 
-        tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
-                                mousePosGrid.y * grid.getGridSizeF());
+        if (action)
+            findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
+
+
+        // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
+        // mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
+
+        // tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
+        //                         mousePosGrid.y * grid.getGridSizeF());
 
         //render begins
         window.clear();
@@ -226,7 +235,7 @@ int main()
         window.setView(view);
        
         grid.draw_axes(window, view, zoom.getCount(), ss);
-        window.draw(tileSelector);
+        // window.draw(tileSelector);
 
         getIntersectionPoints(intersectionPointsCoords, intersectionPoints, redrawIntersectionArea);
 
