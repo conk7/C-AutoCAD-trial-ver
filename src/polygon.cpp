@@ -12,7 +12,7 @@ Polygon::Polygon()
     finished = true;
 }
 
-void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss, bool &action)
+void Polygon::addVert(sf::Vector2i coords, Grid grid, bool &action)
 {
     float const gridSizeF = grid.getGridSizeF();
     unsigned const gridSize = grid.getGridSizeU();
@@ -37,7 +37,7 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss, boo
     bool flagConvex = IsConvex(verts_as_points);
     
     
-    ss << flagConvex << "\n";
+    // ss << flagConvex << "\n";
 
     if(verts.size() == 0)
     {

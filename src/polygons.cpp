@@ -48,8 +48,7 @@ void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShap
 
 void findIntersectionPoints(std::vector<Polygon> polygons, 
                         std::vector<Point> &intersectionPointsCoords, 
-                        bool &redrawIntersectionArea,
-                        std::stringstream &ss)
+                        bool &redrawIntersectionArea)
 {
 
     if(!(polygons.size() >= 2 && polygons[polygons.size() - 1].isFinished())) {return;}
@@ -75,20 +74,20 @@ void findIntersectionPoints(std::vector<Polygon> polygons,
             return;
         }
     }
-    ss << "OLD\n";
-    ss << intersectionPointsCoords.size() << "\n";
-    for(auto &point : intersectionPointsCoords)
-    {
-        ss << point.getX() + 5 << " "
-        << point.getY() + 5 << "\n";   
-    }
-    ss << "NEW\n";
-    ss << newintersectionPointsCoords.size() << "\n";
-    for(auto &point : newintersectionPointsCoords)
-    {
-        ss << point.getX() + 5 << " "
-        << point.getY() + 5 << "\n";   
-    }
+    // ss << "OLD\n";
+    // ss << intersectionPointsCoords.size() << "\n";
+    // for(auto &point : intersectionPointsCoords)
+    // {
+    //     ss << point.getX() + 5 << " "
+    //     << point.getY() + 5 << "\n";   
+    // }
+    // ss << "NEW\n";
+    // ss << newintersectionPointsCoords.size() << "\n";
+    // for(auto &point : newintersectionPointsCoords)
+    // {
+    //     ss << point.getX() + 5 << " "
+    //     << point.getY() + 5 << "\n";   
+    // }
 
     if(newintersectionPointsCoords.size() != intersectionPointsCoords.size())
     {

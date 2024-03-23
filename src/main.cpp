@@ -50,10 +50,10 @@ int main()
     text.setOutlineThickness(1.f);
 
 
-    sf::RectangleShape tileSelector(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
-    tileSelector.setFillColor(sf::Color::Transparent);
-    tileSelector.setOutlineColor(sf::Color::Blue);
-    tileSelector.setOutlineThickness(3);
+    // sf::RectangleShape tileSelector(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
+    // tileSelector.setFillColor(sf::Color::Transparent);
+    // tileSelector.setOutlineColor(sf::Color::Blue);
+    // tileSelector.setOutlineThickness(3);
   
     std::vector<Polygon> polygons;
 
@@ -92,14 +92,14 @@ int main()
         static sf::Vector2i mousePosScreen;
         static sf::Vector2i mousePosWindow;
         static sf::Vector2f mousePosView;
-        static sf::Vector2i mousePosGrid;
+        // static sf::Vector2i mousePosGrid;
 
         mousePosScreen = sf::Mouse::getPosition();
         mousePosWindow = sf::Mouse::getPosition(window);
         window.setView(view);
         mousePosView = window.mapPixelToCoords(mousePosWindow);
-        mousePosGrid.x = mousePosView.x / grid.getGridSizeU();
-        mousePosGrid.y = mousePosView.y / grid.getGridSizeU();
+        // mousePosGrid.x = mousePosView.x / grid.getGridSizeU();
+        // mousePosGrid.y = mousePosView.y / grid.getGridSizeU();
         window.setView(window.getDefaultView());
 
         //update ui
@@ -110,18 +110,20 @@ int main()
         //      << "Grid: " << mousePosGrid.x << " " << mousePosGrid.y << "\n"
         //      << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
 
-        ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
+        // ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
         
 
         if(polygons.size() > 0)
         {
             polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
         }
-        static bool action = false;
+
+        static bool action = false; //flag for the recalculating of the intersection area
+        static bool isMouseButtonPressed = false; //flag for camera movement
 
         sf::Event event;
         updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
-        ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
+        // ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
 
         //event loop
         while (window.pollEvent(event))
@@ -129,7 +131,6 @@ int main()
             if(event.type == sf::Event::Closed)
                 window.close();
 
-            static bool isMouseButtonPressed = false;
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
@@ -149,13 +150,13 @@ int main()
                 if(polygons.size() == 0 || polygons.size() != 0 && polygons[polygons.size() - 1].isFinished())
                 {
                     Polygon polygon;
-                    polygon.addVert(currMousePosView, grid, ss, action);
+                    polygon.addVert(currMousePosView, grid, action);
                     polygons.push_back(polygon);
                     isMouseButtonPressed = false;
                 }
                 else if (polygons.size() != 0 && !polygons[polygons.size() - 1].isFinished())
                 {
-                    polygons[polygons.size() - 1].addVert(currMousePosView, grid, ss, action);
+                    polygons[polygons.size() - 1].addVert(currMousePosView, grid, action);
                     isMouseButtonPressed = false;
                 }
             }
@@ -188,15 +189,15 @@ int main()
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                          !isVertMoving)
             {
-                movingVertIdx = findPolygonIdxOfVert(polygons, mousePosView, ss);
+                movingVertIdx = findPolygonIdxOfVert(polygons, mousePosView);
                 if(movingVertIdx.polygonIdx != -1 && movingVertIdx.vertIdx != -1)
                     isVertMoving = true;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {
-                moveVert(polygons, grid, movingVertIdx, mousePosView, ss);
-                ss << polygons[movingVertIdx.polygonIdx].getVerts().size();
+                moveVert(polygons, grid, movingVertIdx, mousePosView);
+                // ss << polygons[movingVertIdx.polygonIdx].getVerts().size();
                 action = true;
             }
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
@@ -215,7 +216,7 @@ int main()
         }
 
         if (action)
-            findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea, ss);
+            findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
 
 
         // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
@@ -234,7 +235,7 @@ int main()
         //render game elements
         window.setView(view);
        
-        grid.draw_axes(window, view, zoom.getCount(), ss);
+        grid.draw_axes(window, view, zoom.getCount());
         // window.draw(tileSelector);
 
         getIntersectionPoints(intersectionPointsCoords, intersectionPoints, redrawIntersectionArea);

@@ -15,7 +15,7 @@ Grid::Grid(float const gridSizeF)
     this->gridSizeU = static_cast<unsigned>(gridSizeF);
 }
 
-void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &counter, std::stringstream &ss)
+void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &counter)
 {
     sf::Vector2f viewCenter = view.getCenter();
     sf::Vector2f viewSize = view.getSize();
@@ -40,7 +40,7 @@ void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &
         gridIdx += gridSizeU;
     }
     
-    ss << "ZoomFactor " << zoomFactor << "; ZoomCounter " << counter <<  '\n';
+    // ss << "ZoomFactor " << zoomFactor << "; ZoomCounter " << counter <<  '\n';
 
     gridIdx = gridBottomBorder;
     while (gridIdx >= gridTopBorder)
