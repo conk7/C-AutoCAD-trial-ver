@@ -2,7 +2,7 @@
 
 #define EPS 10e-3
 
-MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coords, std::stringstream &ss)
+MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f const coords)
 {
     auto coordsF = coords;
     int i = -1, j = -1;
@@ -24,7 +24,7 @@ MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coo
     return {-1, -1};
 }
 
-void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView, std::stringstream &ss)
+void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView)
 {
     int i = vert.polygonIdx, j = vert.vertIdx;
 
@@ -51,7 +51,7 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
 
     bool flagConvex = IsConvex(verts_as_points);
 
-    ss << flagConvex << "\n";
+    // ss << flagConvex << "\n";
     if (!flagConvex){
         return;
     }

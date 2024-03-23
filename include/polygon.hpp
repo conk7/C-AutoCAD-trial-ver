@@ -17,7 +17,7 @@ private:
     std::vector<sf::CircleShape> verts;
 public:
     Polygon();
-    void addVert(sf::Vector2i coords, Grid grid, std::stringstream &ss);
+    void addVert(sf::Vector2i coords, Grid grid, bool &action);
     void updateDynamicEdge(Grid grid, sf::Vector2i coords);
     std::vector<tLine> getEdges() const;
     std::vector<sf::CircleShape> getVerts() const;

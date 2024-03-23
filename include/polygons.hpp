@@ -8,8 +8,7 @@ void drawIntersectionPoints(sf::RenderWindow &window, std::vector<sf::CircleShap
 
 void findIntersectionPoints(std::vector<Polygon> shapes, 
                         std::vector<Point> &intersectionAreaPoints, 
-                        bool &redrawIntersectionArea,
-                        std::stringstream &ss);
+                        bool &redrawIntersectionArea);
 
 void getIntersectionPoints(std::vector<Point> points, 
                         std::vector<sf::CircleShape> &intersectionPoints,
