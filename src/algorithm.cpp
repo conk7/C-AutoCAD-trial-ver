@@ -111,7 +111,7 @@ bool IsConvex(std::vector<Point> fig)//АБВГДЕЁЖЗИЙКЛМНОПРСТ�
     for (int i = 1; i < n - 1; i++)
     {
         if (are_collinear({fig[i - 1], fig[i]}, {fig[i], fig[i + 1]}) 
-        && distance(fig[i + 1], fig[i]) > distance(fig[i - 1], fig[i + 1]))
+        && fabs(distance(fig[i + 1], fig[i]) + distance(fig[i - 1], fig[i]) - distance(fig[i - 1], fig[i + 1])) > EPS)
         {
             return false;
         }
@@ -142,15 +142,7 @@ bool IsConvex(std::vector<Point> fig)//АБВГДЕЁЖЗИЙКЛМНОПРСТ�
     bool flag = false;
     for (int i = 1; i < n + 1; i++)
     {
-        if (are_collinear({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] }))
-        {
-            if (distance(fig[i - 1], fig[i]) > distance(fig[i - 1], fig[i + 1])
-             && i !=n && i!=n-1)
-            {
-                return false;
-            }
-        }
-        else
+        if (!are_collinear({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] }))
         {
             float det_tek = Rotate({ fig[i - 1], fig[i] }, { fig[i], fig[i + 1] });
             if (sign(det_prev) != sign(det_tek) && flag)
@@ -237,7 +229,10 @@ std::vector<Point> convex_hull(std::vector<Point> points)
             st.push_back(a[i]);
         }
     }
-    st.pop_back();
+    if (fabs(st[0].getX() - st[st.size() - 1].getX()) < EPS && fabs(st[0].getY() - st[st.size() - 1].getY()) < EPS) 
+    {
+        st.pop_back();
+    }
     return st;
 }
 void per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res)
