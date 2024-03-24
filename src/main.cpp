@@ -215,8 +215,13 @@ int main()
             }
         }
 
+        // ss << action << "\n";
+
         if (action)
+        {
             findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
+            action = false;
+        }
 
 
         // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
