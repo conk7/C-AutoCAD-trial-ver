@@ -214,6 +214,7 @@ int main()
                 intersectionPointsCoords.clear();
                 redrawIntersectionArea = true;
             }
+        }
 
         if (action)
         {
