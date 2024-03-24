@@ -10,6 +10,8 @@ Polygon::Polygon()
     vertCount = 0;
     dynamicEdge = false;
     finished = true;
+    edges.reserve(3);
+    verts.reserve(3);
 }
 
 void Polygon::addVert(sf::Vector2i coords, Grid grid, bool &action)
@@ -47,7 +49,7 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, bool &action)
         circle.setFillColor(sf::Color::Yellow);
         verts.push_back(circle);
 
-        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x + radius, coords.y + radius), sf::Color(105,105,105,255), radius);
+        tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x + radius, coords.y + radius), sf::Color(105,105,105,255));
         edges.push_back(edge);
         finished = false;
         dynamicEdge = true;
@@ -72,17 +74,6 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, bool &action)
     if(verts.size() >= 0)
     {
         float const radius = 5;
-        // if (verts.size() >= 3)
-        // {
-        //     if (are_collinear({verts_as_points[verts_as_points.size()- 1], verts_as_points[verts_as_points.size()- 2]}, {verts_as_points[verts_as_points.size()- 2], verts_as_points[verts_as_points.size()- 3]}))
-        //     {
-        //         // verts.pop_back();
-        //         // verts[verts.size() - 1].setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-        //         // edges[edges.size() - 1].updatePointB(coordsF);
-        //         verts[verts.size()-1].setPosition(sf::Vector2f(static_cast<float>(coords.x) - radius, static_cast<float>(coords.y) - radius));
-
-        //     }
-        // }
         if(abs(coordsF.x - verts[0].getPosition().x - radius) < EPS &&
             abs(coordsF.y - verts[0].getPosition().y - radius) < EPS &&
             verts.size() >= 3)
@@ -117,7 +108,7 @@ void Polygon::addVert(sf::Vector2i coords, Grid grid, bool &action)
 
             edges[edges.size() - 1].updatePointB(coordsF);
 
-            tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x+5, coords.y+5), sf::Color(105,105,105,255), radius);
+            tLine edge(sf::Vector2f(coords.x, coords.y), sf::Vector2f(coords.x+radius, coords.y+radius), sf::Color(105,105,105,255));
             edges.push_back(edge);
 
             return;
@@ -172,7 +163,7 @@ std::vector<sf::CircleShape> Polygon::getVerts() const
     return this->verts;
 }
 
-bool Polygon::isFinished()
+bool Polygon::isFinished() const
 {
     return finished;
 }
@@ -198,21 +189,3 @@ void Polygon::setEdges(std::vector<tLine> edges)
 {
     this->edges = edges;
 }
-
-// void Polygon::draw(sf::RenderWindow &window)
-// {
-//     for (auto &shape : shapes)
-//     {
-//         std::vector<tLine> edges = shape.getEdges();
-//         for(auto &edge : edges)
-//         {
-//             window.draw(edge);
-//         }
-//         std::vector<sf::CircleShape> verts = shape.getVerts();
-//         for(auto &vert : verts)
-//         {
-//             window.draw(vert);
-//         }
-//     }
-// }
-

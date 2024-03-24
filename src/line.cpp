@@ -5,7 +5,7 @@ tLine::tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB)
 {
     this->pointA = pointA;
     this->pointB = pointB;
-    this->thickness = 5.f;
+    this->thickness = 4.f;
     this->color = sf::Color::Black;
     
     sf::Vector2f direction = pointB - pointA;
@@ -98,13 +98,3 @@ sf::Vector2f tLine::getPointB() const
 {
     return pointB;
 }
-
-// void tLine::setPointA(sf::Vector2f pos)
-// {
-//     this->pointA = pos;
-// }
-
-// void tLine::setPointB(sf::Vector2f pos)
-// {
-//     this->pointB = pos;
-// }

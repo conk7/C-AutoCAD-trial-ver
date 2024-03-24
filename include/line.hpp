@@ -12,13 +12,11 @@ private:
     sf::Vector2f pointB;
 public:
     tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB);
-    tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB, sf::Color color, float thickness);
+    tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB, sf::Color color = sf::Color::Black, float thickness = 4.f);
     void draw(sf::RenderTarget &window, sf::RenderStates states) const;
     void setColor(sf::Color color);
     void updatePointA(const sf::Vector2f &pointA);
     void updatePointB(const sf::Vector2f &pointB);
     sf::Vector2f getPointA() const;
     sf::Vector2f getPointB() const;
-    void setPointA(sf::Vector2f pos);
-    void setPointB(sf::Vector2f pos);
 };

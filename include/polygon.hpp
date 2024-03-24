@@ -23,6 +23,6 @@ public:
     std::vector<sf::CircleShape> getVerts() const;
     void setVerts(std::vector<sf::CircleShape> verts);
     void setEdges(std::vector<tLine> edges);
-    bool isFinished();
+    bool isFinished() const;
     std::vector<Point> getVertsCoords();
 };
