@@ -113,7 +113,7 @@ int main()
         static bool isMouseButtonPressed = false; //flag for camera movement
 
         // ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
-        
+
         sf::Event event;
         //event loop
         while (window.pollEvent(event))
@@ -125,7 +125,7 @@ int main()
             {
                 polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
             }
-
+          
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 isMouseButtonPressed = false;
@@ -214,14 +214,12 @@ int main()
                 intersectionPointsCoords.clear();
                 redrawIntersectionArea = true;
             }
-        }
 
         if (action)
         {
             findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
             action = false;
         }
-
         // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         // mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 
