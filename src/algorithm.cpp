@@ -16,11 +16,11 @@ Point::Point()
     x = 0;
     y = 0;
 }
-float Point::getX()
+float Point::getX() const
 {
     return x;
 }
-float Point::getY()
+float Point::getY() const
 {
     return y;
 }
@@ -41,7 +41,6 @@ void Point::setY(float y)
 {
     this->y = y;
 }
-
 
 float angle(Point a)
 {

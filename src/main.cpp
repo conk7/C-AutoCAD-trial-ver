@@ -49,7 +49,6 @@ int main()
     text.setOutlineColor(sf::Color::Black);
     text.setOutlineThickness(1.f);
 
-
     // sf::RectangleShape tileSelector(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
     // tileSelector.setFillColor(sf::Color::Transparent);
     // tileSelector.setOutlineColor(sf::Color::Blue);
@@ -85,10 +84,8 @@ int main()
         static sf::Vector2i currMousePosWindow;
         static sf::Vector2i prevMousePosWindow;
         updateMousePosView(prevMousePosView, currMousePosView, window, view);
-        // updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view); 
+        updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view); 
         
-
-
         static sf::Vector2i mousePosScreen;
         static sf::Vector2i mousePosWindow;
         static sf::Vector2f mousePosView;
@@ -111,25 +108,23 @@ int main()
         //      << "CurrMousePos: " << currMousePosView.x << " " << currMousePosView.y << "\n";
 
         // ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
-        
-
-        if(polygons.size() > 0)
-        {
-            polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
-        }
 
         static bool action = false; //flag for the recalculating of the intersection area
         static bool isMouseButtonPressed = false; //flag for camera movement
 
-        sf::Event event;
-        updateMousePosWindow(prevMousePosWindow, currMousePosWindow, window, view);
         // ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
-
+        
+        sf::Event event;
         //event loop
         while (window.pollEvent(event))
         {
             if(event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::MouseMoved && polygons.size() > 0)
+            {
+                polygons[polygons.size() - 1].updateDynamicEdge(grid,currMousePosView);
+            }
 
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
@@ -144,6 +139,7 @@ int main()
             {
                 isMouseButtonPressed = true;
             }
+
             if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased)
             {
 
@@ -175,6 +171,7 @@ int main()
                 window.setKeyRepeatEnabled(false);
                 isFullscreen = true;
             }
+
             if (event.type == sf::Event::MouseWheelMoved)
             {
                 if (event.mouseWheel.delta > 0)
@@ -182,10 +179,12 @@ int main()
                 else if (event.mouseWheel.delta < 0)
                     zoom.zoomOut(window, view);
             }
+
             if (event.type == sf::Event::Resized)
             {
                 zoom.zoomSet(window, view);
             }  
+
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                          !isVertMoving)
             {
@@ -202,10 +201,12 @@ int main()
             }
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
-            {   action = false;
+            {   
+                action = false;
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
             }
+
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Delete))
             {
                 polygons.clear();
@@ -215,14 +216,11 @@ int main()
             }
         }
 
-        // ss << action << "\n";
-
         if (action)
         {
             findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
             action = false;
         }
-
 
         // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         // mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());

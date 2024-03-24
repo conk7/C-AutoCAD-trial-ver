@@ -15,19 +15,25 @@ Grid::Grid(float const gridSizeF)
     this->gridSizeU = static_cast<unsigned>(gridSizeF);
 }
 
-void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const &counter)
+void Grid::draw_axes(sf::RenderWindow &window, sf::View const &view, int const counter)
 {
     sf::Vector2f viewCenter = view.getCenter();
     sf::Vector2f viewSize = view.getSize();
-    float zoomFactor = pow(1.02, static_cast<float>(counter));
-    float viewLeftBorder = viewCenter.x - (viewSize.x / 2);
-    float gridLeftBorder = floor(viewLeftBorder / gridSizeU) * gridSizeU;
-    float viewRightBorder = viewCenter.x + (viewSize.x / 2);
-    float gridRightBorder = ceil(viewRightBorder / gridSizeU) * gridSizeU;
-    float viewTopBorder = viewCenter.y - (viewSize.y / 2);
-    float gridTopBorder = ceil(viewTopBorder / gridSizeU) * gridSizeU;
-    float viewBottomBorder = viewCenter.y + (viewSize.y / 2);
-    float gridBottomBorder = (floor(viewBottomBorder / gridSizeU) * gridSizeU) + gridSizeU;
+    
+    float const thicknessFactor = 1.02;
+    float const zoomFactor = pow(thicknessFactor, static_cast<float>(counter));
+
+    float const viewLeftBorder = viewCenter.x - (viewSize.x / 2);
+    float const gridLeftBorder = floor(viewLeftBorder / gridSizeU) * gridSizeU;
+
+    float const viewRightBorder = viewCenter.x + (viewSize.x / 2);
+    float const gridRightBorder = ceil(viewRightBorder / gridSizeU) * gridSizeU;
+
+    float const viewTopBorder = viewCenter.y - (viewSize.y / 2);
+    float const gridTopBorder = ceil(viewTopBorder / gridSizeU) * gridSizeU;
+
+    float const viewBottomBorder = viewCenter.y + (viewSize.y / 2);
+    float const gridBottomBorder = (floor(viewBottomBorder / gridSizeU) * gridSizeU) + gridSizeU;
     
     float gridIdx = gridLeftBorder;
     while (gridIdx < gridRightBorder)

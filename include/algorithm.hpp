@@ -8,17 +8,15 @@ class Point
 {
     float x;
     float y;
-public:
+  public:
     Point(float x1, float y1);
     Point();
-    float getX();
-    float getY();
+    float getX() const;
+    float getY() const;
     void setX(float x);
     void setY(float y);
 };
-// typedef Point Vector;
-// static Point P = Point(0,0);
-// template<typename T>
+
 int sign(float a);
 float angle(Point a);
 bool f(Point a, Point b);
