@@ -4,7 +4,7 @@
 
 MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f const coords)
 {
-    auto coordsF = coords;
+    auto const coordsF = coords;
     int i = -1, j = -1;
     
     for(i = polygons.size()-1; i >= 0; i--)
@@ -15,7 +15,6 @@ MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f con
             sf::FloatRect mouseHitbox(sf::Vector2f(coordsF.x - 5, coordsF.y - 5), sf::Vector2f(10, 10 ));
             if(verts[j].getGlobalBounds().intersects(mouseHitbox))
             {
-                // ss << "True \n";
                 return {i, j};
             }
         }
@@ -29,15 +28,20 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
     int i = vert.polygonIdx, j = vert.vertIdx;
 
     auto verts = polygons[i].getVerts();
-    float radius = 5;
-    float gridSizeF = grid.getGridSizeF();
-    sf::Vector2f newPos = { round(mousePosView.x/gridSizeF) * gridSizeF, round(mousePosView.y/gridSizeF) * gridSizeF };
-    sf::Vector2f newPosRadius = { round(mousePosView.x/gridSizeF) * gridSizeF - radius, round(mousePosView.y/gridSizeF) * gridSizeF - radius};
+    float const radius = 5;
+    float const gridSizeF = grid.getGridSizeF();
+
+    sf::Vector2f const newPos = { round(mousePosView.x/gridSizeF) * gridSizeF, round(mousePosView.y/gridSizeF) * gridSizeF };
+    sf::Vector2f const newPosRadius = { round(mousePosView.x/gridSizeF) * gridSizeF - radius, round(mousePosView.y/gridSizeF) * gridSizeF - radius};
+
     verts[j].setPosition(newPosRadius);
-    for (int k = 0; k < verts.size(); ++k){
-        if (k != j){
+    for (int k = 0; k < verts.size(); ++k)
+    {
+        if (k != j)
+        {
             if(abs(verts[k].getPosition().x - verts[j].getPosition().x) < EPS &&
-            abs(verts[k].getPosition().y - verts[j].getPosition().y) < EPS){
+            abs(verts[k].getPosition().y - verts[j].getPosition().y) < EPS)
+            {
                 return;
             }
         }
@@ -52,9 +56,9 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
     bool flagConvex = IsConvex(verts_as_points);
 
     // ss << flagConvex << "\n";
-    if (!flagConvex){
+    if (!flagConvex)
         return;
-    }
+
     polygons[i].setVerts(verts);
 
     auto edges = polygons[i].getEdges();
