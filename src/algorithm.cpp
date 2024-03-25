@@ -292,8 +292,6 @@ bool is_inside(std::vector<Point> fig, Point p)
 }
 std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector<Point> fig2)
 {
-    // if(fig1.size() == 0 || fig2.size() == 0) {return fig1;} //uncomment this and comment line 53 in main to get a new intersention 
-                                                                //area every time a new group of intersected triangles is drawn
     std::vector<Point> points;
     for (auto it : fig2)
     {

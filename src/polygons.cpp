@@ -138,7 +138,7 @@ void getIntersectionPoints(std::vector<Point> intersectionPointsCoords,
         float x = pointCoords.getX();
         float y = pointCoords.getY();
         circle.setPosition(sf::Vector2f(x, y));
-        circle.setFillColor(sf::Color::Blue);
+        circle.setFillColor(sf::Color(30,220,220,170));
         intersectionPoints.push_back(circle);
     }
     redrawIntersectionArea = false;

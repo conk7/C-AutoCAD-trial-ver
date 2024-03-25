@@ -24,12 +24,12 @@ void Zoom::zoomIn(sf::RenderWindow& window, sf::View& view)
     zoomCount += 1;
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-    int mouseX = mousePos.x, mouseY = mousePos.y;
+    int const mouseX = mousePos.x, mouseY = mousePos.y;
 
-    sf::Vector2f beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+    sf::Vector2f const beforeCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
     view.zoom(1/zoomFactor);
-    sf::Vector2f afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
-    const sf::Vector2f offsetCoords{ beforeCoords - afterCoords };
+    sf::Vector2f const afterCoords = window.mapPixelToCoords(sf::Vector2i(mouseX, mouseY), view);
+    sf::Vector2f const offsetCoords{ beforeCoords - afterCoords };
     view.move(offsetCoords);
     window.setView(view);
 }
@@ -55,7 +55,7 @@ void Zoom::zoomOut(sf::RenderWindow& window, sf::View& view)
 
 void Zoom::zoomSet(sf::RenderWindow& window, sf::View& view)
 {
-    auto newSize = window.getSize();
+    auto const newSize = window.getSize();
     view.setSize(newSize.x, newSize.y);
 
     view.zoom(pow(1/zoomFactor,zoomCount));
