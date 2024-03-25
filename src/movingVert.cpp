@@ -75,3 +75,27 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
         polygons[i].setEdges(edges);
     }
 }
+
+void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, int PolygonIdx)
+{
+    int i = PolygonIdx, j = MovingVertIdx;
+    
+    auto verts = polygons[i].getVerts();
+    auto VertsAsPoint = polygons[i].getVertsCoords();
+    auto edges = polygons[i].getEdges();
+    
+    if (verts.size() <= 3) 
+    {
+        return;
+    }
+    
+    verts.erase(verts.begin() + j); 
+    VertsAsPoint.erase(VertsAsPoint.begin() + j); 
+    edges.erase(edges.begin() + j);
+    sf::Vector2f updateB = {VertsAsPoint[(j + verts.size()) % verts.size()].getX(), VertsAsPoint[(j + verts.size()) % verts.size()].getY()};
+    edges[(j - 1 + edges.size()) % edges.size()].updatePointB(updateB);
+    
+    
+    polygons[i].setVerts(verts);
+    polygons[i].setEdges(edges);
+}

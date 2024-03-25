@@ -66,6 +66,11 @@ int main()
 
     bool isVertMoving = false;
     MovingVert movingVertIdx = {-1,-1};
+    MovingVert delVertIdx = {-1, -1};
+    //delete last polygon indicator
+    bool isZKeyPressed = false;
+    //delete specific point indicator
+    bool isVKeyPressed = false;
 
     //main loop
     while (window.isOpen())
@@ -206,7 +211,28 @@ int main()
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
             }
-
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::V) && !isVKeyPressed)
+            {
+                delVertIdx = findPolygonIdxOfVert(polygons, mousePosView);
+                ss << "Remove vert: " << isVKeyPressed << "\n";
+                if(delVertIdx.polygonIdx != -1 && delVertIdx.vertIdx != -1)
+                    isVKeyPressed = true;
+            }
+            else if (isVKeyPressed)
+            {
+                ss << "Remove vert: " << isVKeyPressed<< "\n";
+                removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx);
+                action = true;
+                isVKeyPressed = false;
+                ss << "Remove vert:" << isVKeyPressed << "\n";
+                delVertIdx = {-1, -1};
+            }
+            // else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+            // {
+            //     isVKeyPressed = false;
+            //     ss << "Remove vert:" << isVKeyPressed << "\n";
+            //     delVertIdx = {-1, -1};
+            // }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Delete))
             {
                 polygons.clear();
@@ -215,13 +241,30 @@ int main()
                 redrawIntersectionArea = true;
                 isVertMoving = false;
             }
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !isZKeyPressed)
+            {
+                isZKeyPressed = true;
+        
+                if (polygons.size() > 0)
+                {
+                    polygons.pop_back();
+                    intersectionPointsCoords.clear();
+                    redrawIntersectionArea = true;
+                    action = true;
+                    isVertMoving = false;
+                }
+            }
+            else if (!(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)))
+            {
+                isZKeyPressed = false;
+            }
         }
-
         if (action)
         {
             findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
             action = false;
         }
+        ss << "Intersection area: " << Area(intersectionPointsCoords);
         // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
         // mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
 

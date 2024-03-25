@@ -319,3 +319,20 @@ std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector
     points = convex_hull(points);
     return points;
 }
+float Area(std::vector<Point> fig)
+{   
+    if (fig.size() == 0)
+    {
+        return 0;
+    }
+    fig.push_back(fig[0]);
+    int k = fig.size();
+    float S = 0;
+    for (int i = 0; i < k - 1; i++)
+    {
+        auto a = fig[i];
+        auto b = fig[(i + 1) % (k - 1)];
+        S+= a.getX()*b.getY() - b.getX()*a.getY();
+    }
+    return fabs(S) / 20000;
+}
