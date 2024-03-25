@@ -1,7 +1,7 @@
 <div style="text-align:center">
 
 # **Intersection of convex polygons**
-![intersection](https://imgur.com/a/6yJ3C1M)
+![intersection](misc/intersection.png)
 
 </div>
 
