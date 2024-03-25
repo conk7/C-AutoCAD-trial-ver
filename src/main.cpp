@@ -213,6 +213,7 @@ int main()
                 intersectionPoints.clear();
                 intersectionPointsCoords.clear();
                 redrawIntersectionArea = true;
+                isVertMoving = false;
             }
         }
 
