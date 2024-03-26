@@ -73,4 +73,4 @@ The project was made by:
 - [Timofey Pyankov](https://github.com/TomBomBon)
 - [Rodion Kholodov](https://github.com/londxz)
   
-  For feedback on the project, you should write to our product manager: *Rodion Kholodov* - https://t.me/londxz
+  For feedback on the project, you should write to our product manager: ***Rodion Kholodov* - https://t.me/londxz
