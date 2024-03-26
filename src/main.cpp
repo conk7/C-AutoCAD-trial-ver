@@ -42,17 +42,12 @@ int main()
     sf::Font font;
     font.loadFromFile("../../misc/Dosis-VariableFont_wght.ttf");
     sf::Text text;
-    text.setCharacterSize(40);
+    text.setCharacterSize(50);
     text.setFillColor(sf::Color::White);
     text.setFont(font);
     text.setPosition(20.f, 20.f);
     text.setOutlineColor(sf::Color::Black);
     text.setOutlineThickness(1.f);
-
-    // sf::RectangleShape tileSelector(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
-    // tileSelector.setFillColor(sf::Color::Transparent);
-    // tileSelector.setOutlineColor(sf::Color::Blue);
-    // tileSelector.setOutlineThickness(3);
   
     std::vector<Polygon> polygons;
 
@@ -67,10 +62,11 @@ int main()
     bool isVertMoving = false;
     MovingVert movingVertIdx = {-1,-1};
     MovingVert delVertIdx = {-1, -1};
-    //delete last polygon indicator
+
+    //delete last polygon flag
     bool isZKeyPressed = false;
-    //delete specific point indicator
-    bool isVKeyPressed = false;
+    //delete specific point flag
+    bool isRMBKeyPressed = false;
 
     //main loop
     while (window.isOpen())
@@ -211,26 +207,22 @@ int main()
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::V) && !isVKeyPressed)
+
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isRMBKeyPressed)
             {
                 delVertIdx = findPolygonIdxOfVert(polygons, mousePosView);
                 if(delVertIdx.polygonIdx != -1 && delVertIdx.vertIdx != -1)
-                    isVKeyPressed = true;
+                    isRMBKeyPressed = true;
             }
-            else if (isVKeyPressed)
+            else if (isRMBKeyPressed)
             {
                 removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx, mousePosView);
                 action = true;
-                isVKeyPressed = false;
+                isRMBKeyPressed = false;
                 delVertIdx = {-1, -1};
                 isVertMoving = false;
             }
-            // else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::V))
-            // {
-            //     isVKeyPressed = false;
-            //     ss << "Remove vert:" << isVKeyPressed << "\n";
-            //     delVertIdx = {-1, -1};
-            // }
+
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Delete))
             {
                 polygons.clear();
@@ -239,35 +231,33 @@ int main()
                 redrawIntersectionArea = true;
                 isVertMoving = false;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !isZKeyPressed)
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && 
+                sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && 
+                polygons.size() > 0 &&
+                !isZKeyPressed)
             {
                 isZKeyPressed = true;
         
-                if (polygons.size() > 0)
-                {
-                    polygons.pop_back();
-                    intersectionPointsCoords.clear();
-                    redrawIntersectionArea = true;
-                    action = true;
-                    isVertMoving = false;
-                }
+                polygons.pop_back();
+                intersectionPointsCoords.clear();
+                redrawIntersectionArea = true;
+                action = true;
+                isVertMoving = false;
             }
-            else if (!(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)))
+            else if (!(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && 
+                        sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)))
             {
                 isZKeyPressed = false;
             }
         }
+
         if (action)
         {
             findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
             action = false;
         }
-        ss << "Intersection area: " << Area(intersectionPointsCoords);
-        // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
-        // mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
-
-        // tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
-        //                         mousePosGrid.y * grid.getGridSizeF());
+        ss << "Intersection area = " << Area(intersectionPointsCoords);
 
         //render begins
         window.clear();
