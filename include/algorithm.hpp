@@ -28,3 +28,4 @@ std::vector<Point> convex_hull(std::vector<Point> points);
 void per_otr(std::pair<Point, Point> otr1, std::pair<Point, Point> otr2, std::vector<Point>& res);
 bool is_inside(std::vector<Point> fig, Point p);
 std::vector<Point> The_area_of_intersection(std::vector<Point> fig1, std::vector<Point> fig2);
+float Area(std::vector<Point> fig);

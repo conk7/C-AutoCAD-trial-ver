@@ -42,17 +42,12 @@ int main()
     sf::Font font;
     font.loadFromFile("../../misc/Dosis-VariableFont_wght.ttf");
     sf::Text text;
-    text.setCharacterSize(40);
+    text.setCharacterSize(50);
     text.setFillColor(sf::Color::White);
     text.setFont(font);
     text.setPosition(20.f, 20.f);
     text.setOutlineColor(sf::Color::Black);
     text.setOutlineThickness(1.f);
-
-    // sf::RectangleShape tileSelector(sf::Vector2f(grid.getGridSizeF(), grid.getGridSizeF()));
-    // tileSelector.setFillColor(sf::Color::Transparent);
-    // tileSelector.setOutlineColor(sf::Color::Blue);
-    // tileSelector.setOutlineThickness(3);
   
     std::vector<Polygon> polygons;
 
@@ -66,6 +61,12 @@ int main()
 
     bool isVertMoving = false;
     MovingVert movingVertIdx = {-1,-1};
+    MovingVert delVertIdx = {-1, -1};
+
+    //delete last polygon flag
+    bool isZKeyPressed = false;
+    //delete specific point flag
+    bool isRMBKeyPressed = false;
 
     //main loop
     while (window.isOpen())
@@ -202,9 +203,24 @@ int main()
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {   
-                action = false;
+                //action = false;
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
+            }
+
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isRMBKeyPressed)
+            {
+                delVertIdx = findPolygonIdxOfVert(polygons, mousePosView);
+                if(delVertIdx.polygonIdx != -1 && delVertIdx.vertIdx != -1)
+                    isRMBKeyPressed = true;
+            }
+            else if (isRMBKeyPressed)
+            {
+                removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx, mousePosView);
+                action = true;
+                isRMBKeyPressed = false;
+                delVertIdx = {-1, -1};
+                isVertMoving = false;
             }
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Delete))
@@ -213,6 +229,26 @@ int main()
                 intersectionPoints.clear();
                 intersectionPointsCoords.clear();
                 redrawIntersectionArea = true;
+                isVertMoving = false;
+            }
+
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && 
+                sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && 
+                polygons.size() > 0 &&
+                !isZKeyPressed)
+            {
+                isZKeyPressed = true;
+        
+                polygons.pop_back();
+                intersectionPointsCoords.clear();
+                redrawIntersectionArea = true;
+                action = true;
+                isVertMoving = false;
+            }
+            else if (!(sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && 
+                        sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)))
+            {
+                isZKeyPressed = false;
             }
         }
 
@@ -221,11 +257,7 @@ int main()
             findIntersectionPoints(polygons, intersectionPointsCoords, redrawIntersectionArea);
             action = false;
         }
-        // mousePosGrid.x = floor(mousePosView.x / grid.getGridSizeU());
-        // mousePosGrid.y = floor(mousePosView.y / grid.getGridSizeU());
-
-        // tileSelector.setPosition(mousePosGrid.x * grid.getGridSizeF(), 
-        //                         mousePosGrid.y * grid.getGridSizeF());
+        ss << "Intersection area = " << Area(intersectionPointsCoords);
 
         //render begins
         window.clear();
