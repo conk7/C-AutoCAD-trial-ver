@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20.0)
-project(CMakeSFMLProject LANGUAGES CXX)
+project(Intersections LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -11,7 +11,7 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(CMakeSFMLProject 
+add_executable(Intersections 
             src/main.cpp 
             src/grid.cpp 
             src/polygon.cpp 
@@ -22,14 +22,14 @@ add_executable(CMakeSFMLProject
             src/mouse.cpp
             src/zoom.cpp)
             
-target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(Intersections PRIVATE sfml-graphics sfml-window sfml-system)
 
 if(WIN32)
-    target_link_options(CMakeSFMLProject PRIVATE -mwindows)
+    target_link_options(Intersections PRIVATE -mwindows)
 endif(WIN32)
 
 if(UNIX)
-    target_link_options(CMakeSFMLProject PRIVATE)
+    target_link_options(Intersections PRIVATE)
 endif(UNIX)
 
-install(TARGETS CMakeSFMLProject)
+install(TARGETS Intersections)

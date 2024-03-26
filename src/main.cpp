@@ -18,7 +18,7 @@ int main()
     const uint16_t SCREENH = 1080;
 
     //creating and configuring the window
-    static std::string WindowTitle = "52";
+    static std::string WindowTitle = "Intersections";
     sf::RenderWindow window(sf::VideoMode(SCREENW, SCREENH), WindowTitle, 7, sf::ContextSettings(24,8,8));  // sf::Style::Fullscreen
     window.setVerticalSyncEnabled(true);
     window.setKeyRepeatEnabled(false);
