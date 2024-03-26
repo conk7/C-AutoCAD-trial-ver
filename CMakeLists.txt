@@ -17,14 +17,15 @@ FetchContent_MakeAvailable(SFML)
 add_executable(CMakeSFMLProject 
             src/main.cpp 
             src/grid.cpp 
-            src/shape.cpp 
+            src/polygon.cpp 
+            src/polygons.cpp 
             src/line.cpp 
             src/algorithm.cpp 
-            src/isOnVerts.cpp
-            )
+            src/movingVert.cpp
+            src/mouse.cpp
+            src/zoom.cpp)
             
 target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics sfml-window sfml-system)
-target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
 
 if(WIN32)
     target_link_options(CMakeSFMLProject PRIVATE -mwindows)

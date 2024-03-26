@@ -1,18 +1,18 @@
-#include "..\include\line.hpp"
+#include "../include/line.hpp"
 
 
 tLine::tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB)
 {
     this->pointA = pointA;
     this->pointB = pointB;
-    this->thickness = 5.f;
+    this->thickness = 4.f;
     this->color = sf::Color::Black;
     
-    sf::Vector2f direction = pointB - pointA;
-    sf::Vector2f unitDirection = direction / sqrt(direction.x*direction.x+direction.y*direction.y);
-    sf::Vector2f unitPerpendicular(-unitDirection.y,unitDirection.x);
+    sf::Vector2f const direction = pointB - pointA;
+    sf::Vector2f const unitDirection = direction / sqrt(direction.x*direction.x+direction.y*direction.y);
+    sf::Vector2f const unitPerpendicular(-unitDirection.y,unitDirection.x);
 
-    sf::Vector2f offset = (thickness /2.f) * unitPerpendicular;
+    sf::Vector2f const offset = (thickness /2.f) * unitPerpendicular;
 
     vertices[0].position = pointA + offset;
     vertices[1].position = pointB + offset;
@@ -30,11 +30,11 @@ tLine::tLine(const sf::Vector2f &pointA, const sf::Vector2f &pointB, sf::Color c
     this->thickness = thickness;
     this->color = color;
 
-    sf::Vector2f direction = pointB - pointA;
-    sf::Vector2f unitDirection = direction / sqrt(direction.x*direction.x+direction.y*direction.y);
-    sf::Vector2f unitPerpendicular(-unitDirection.y,unitDirection.x);
+    sf::Vector2f const direction = pointB - pointA;
+    sf::Vector2f const unitDirection = direction / sqrt(direction.x*direction.x+direction.y*direction.y);
+    sf::Vector2f const unitPerpendicular(-unitDirection.y,unitDirection.x);
 
-    sf::Vector2f offset = (thickness / 2.f) * unitPerpendicular;
+    sf::Vector2f const offset = (thickness / 2.f) * unitPerpendicular;
 
     vertices[0].position = pointA + offset;
     vertices[1].position = pointB + offset;
@@ -61,9 +61,9 @@ void tLine::updatePointA(const sf::Vector2f &pointA)
 {
     this->pointA = pointA;
 
-    sf::Vector2f direction = pointB - pointA;
-    sf::Vector2f unitDirection = direction/ sqrt(direction.x*direction.x+direction.y*direction.y);
-    sf::Vector2f unitPerpendicular(-unitDirection.y,unitDirection.x);
+    sf::Vector2f const direction = pointB - pointA;
+    sf::Vector2f const unitDirection = direction/ sqrt(direction.x*direction.x+direction.y*direction.y);
+    sf::Vector2f const unitPerpendicular(-unitDirection.y,unitDirection.x);
 
     sf::Vector2f offset = (thickness/2.f)*unitPerpendicular;
 
@@ -77,11 +77,11 @@ void tLine::updatePointB(const sf::Vector2f &pointB)
 {
     this->pointB = pointB;
 
-    sf::Vector2f direction = pointB - pointA;
-    sf::Vector2f unitDirection = direction/ sqrt(direction.x*direction.x+direction.y*direction.y);
-    sf::Vector2f unitPerpendicular(-unitDirection.y,unitDirection.x);
+    sf::Vector2f const direction = pointB - pointA;
+    sf::Vector2f const unitDirection = direction/ sqrt(direction.x*direction.x+direction.y*direction.y);
+    sf::Vector2f const unitPerpendicular(-unitDirection.y,unitDirection.x);
 
-    sf::Vector2f offset = (thickness/2.f)*unitPerpendicular;
+    sf::Vector2f const offset = (thickness/2.f)*unitPerpendicular;
 
     vertices[0].position = pointA + offset;
     vertices[1].position = pointB + offset;
@@ -97,14 +97,4 @@ sf::Vector2f tLine::getPointA() const
 sf::Vector2f tLine::getPointB() const
 {
     return pointB;
-}
-
-void tLine::setPointA(sf::Vector2f pos)
-{
-    this->pointA = pos;
-}
-
-void tLine::setPointB(sf::Vector2f pos)
-{
-    this->pointB = pos;
 }
