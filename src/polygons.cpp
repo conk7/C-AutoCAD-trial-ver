@@ -51,8 +51,12 @@ void findIntersectionPoints(std::vector<Polygon> polygons,
                         bool &redrawIntersectionArea)
 {
 
-    if(!(polygons.size() >= 2 && polygons[polygons.size() - 1].isFinished())) {return;}
-
+    if(!(polygons.size() >= 2 /*&& polygons[polygons.size() - 1].isFinished()*/)) {return;}
+    if (!polygons[polygons.size() - 1].isFinished())
+    {
+        polygons.pop_back();
+    }
+    if(!(polygons.size() >= 2)) {return;}
     auto fig1 = polygons[0].getVertsCoords();
     auto fig2 = polygons[1].getVertsCoords();
     std::vector<Point> newintersectionPointsCoords = The_area_of_intersection(fig1, fig2);
@@ -93,6 +97,7 @@ void findIntersectionPoints(std::vector<Polygon> polygons,
     {
         intersectionPointsCoords = newintersectionPointsCoords;
         redrawIntersectionArea = true;
+        return;
     }
 
     bool equals = false;

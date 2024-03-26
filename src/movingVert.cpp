@@ -76,26 +76,63 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
     }
 }
 
-void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, int PolygonIdx)
+void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, int PolygonIdx, sf::Vector2f mousePosView)
 {
     int i = PolygonIdx, j = MovingVertIdx;
-    
+    float const gridSizeF = grid.getGridSizeF();
+    sf::Vector2f const newPos = { round(mousePosView.x/gridSizeF) * gridSizeF, round(mousePosView.y/gridSizeF) * gridSizeF };
     auto verts = polygons[i].getVerts();
     auto VertsAsPoint = polygons[i].getVertsCoords();
     auto edges = polygons[i].getEdges();
-    
-    if (verts.size() <= 3) 
+    if (!polygons[i].isFinished())
     {
-        return;
+        if (verts.size() <= 1) 
+        {
+            return;
+        }
+        if (j == verts.size() - 1)
+        {
+            verts.pop_back();
+            edges.pop_back();
+            VertsAsPoint.pop_back();
+            polygons[i].setVerts(verts);
+            edges[edges.size() - 1].updatePointB(newPos);
+            sf::Vector2f updateA = {round(VertsAsPoint[VertsAsPoint.size() - 1].getX() / gridSizeF) * gridSizeF, round(VertsAsPoint[VertsAsPoint.size() - 1].getY() / gridSizeF) * gridSizeF};
+            edges[edges.size() - 1].updatePointA(updateA);
+            polygons[i].setVerts(verts);
+            polygons[i].setEdges(edges);
+        }
+        else
+        {
+            if (j == 0)
+            {
+                return;
+            }
+            verts.erase(verts.begin() + j); 
+            VertsAsPoint.erase(VertsAsPoint.begin() + j); 
+            edges.erase(edges.begin() + j);
+            sf::Vector2f updateB = {round(VertsAsPoint[(j + verts.size()) % verts.size()].getX() / gridSizeF) * gridSizeF, round(VertsAsPoint[(j + verts.size()) % verts.size()].getY() / gridSizeF) * gridSizeF};
+            edges[(j - 1 + edges.size()) % edges.size()].updatePointB(updateB);
+            
+            polygons[i].setVerts(verts);
+            polygons[i].setEdges(edges);
+        }
     }
+    else 
+    {
+        if (verts.size() <= 3) 
+        {
+            return;
+        }
     
-    verts.erase(verts.begin() + j); 
-    VertsAsPoint.erase(VertsAsPoint.begin() + j); 
-    edges.erase(edges.begin() + j);
-    sf::Vector2f updateB = {VertsAsPoint[(j + verts.size()) % verts.size()].getX(), VertsAsPoint[(j + verts.size()) % verts.size()].getY()};
-    edges[(j - 1 + edges.size()) % edges.size()].updatePointB(updateB);
-    
-    
-    polygons[i].setVerts(verts);
-    polygons[i].setEdges(edges);
+        verts.erase(verts.begin() + j); 
+        VertsAsPoint.erase(VertsAsPoint.begin() + j); 
+        edges.erase(edges.begin() + j);
+        sf::Vector2f updateB = {round(VertsAsPoint[(j + verts.size()) % verts.size()].getX() / gridSizeF) * gridSizeF, round(VertsAsPoint[(j + verts.size()) % verts.size()].getY() / gridSizeF) * gridSizeF};
+        edges[(j - 1 + edges.size()) % edges.size()].updatePointB(updateB);
+        
+        
+        polygons[i].setVerts(verts);
+        polygons[i].setEdges(edges);
+    }
 }

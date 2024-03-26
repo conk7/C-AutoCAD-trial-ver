@@ -207,25 +207,23 @@ int main()
             else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                         isVertMoving)
             {   
-                action = false;
+                //action = false;
                 isVertMoving = false;
                 movingVertIdx = {-1, -1};
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::V) && !isVKeyPressed)
             {
                 delVertIdx = findPolygonIdxOfVert(polygons, mousePosView);
-                ss << "Remove vert: " << isVKeyPressed << "\n";
                 if(delVertIdx.polygonIdx != -1 && delVertIdx.vertIdx != -1)
                     isVKeyPressed = true;
             }
             else if (isVKeyPressed)
             {
-                ss << "Remove vert: " << isVKeyPressed<< "\n";
-                removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx);
+                removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx, mousePosView);
                 action = true;
                 isVKeyPressed = false;
-                ss << "Remove vert:" << isVKeyPressed << "\n";
                 delVertIdx = {-1, -1};
+                isVertMoving = false;
             }
             // else if(!sf::Keyboard::isKeyPressed(sf::Keyboard::V))
             // {
