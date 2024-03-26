@@ -13,7 +13,7 @@ Our team provide users with a grid on a plane that allows them to construct excl
 The project has important practical applications in computer graphics, design and other areas where geometric data processing is required.
 
 ## Quick Start
-Just copy the repository folder to your local machine. If you are a developer and are interested in code, then it is better to study the section called *[ Project structure](https://github.com/conk7/C-AutoCAD-trial-ver?tab=readme-ov-file#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B0)*. If you are a user, then simply go to the *../release* folder, in which the file you need will be stored - *CMakeSFMLProject.exe*.
+Just copy the repository folder to your local machine. If you are a developer and are interested in code, then it is better to study the section called *[ Project structure](https://github.com/conk7/C-AutoCAD-trial-ver?tab=readme-ov-file#project-structure)*. If you are a user, then simply go to the *../release* folder, in which the file you need will be stored - *CMakeSFMLProject.exe*.
 
 ## Possibility of use
 As mentioned previously, the project enables users to visually represent convex shapes entered on a grid, identify their intersections, and calculate the area of the overlapping regions. An important feature of the project is the ability to **snap vertices to the grid**, meaning that the coordinates of the figure's vertices can only be integer values located at the grid lines' intersections.
