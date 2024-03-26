@@ -63,10 +63,10 @@ int main()
     MovingVert movingVertIdx = {-1,-1};
     MovingVert delVertIdx = {-1, -1};
 
-    //delete last polygon flag
-    bool isZKeyPressed = false;
-    //delete specific point flag
-    bool isRMBKeyPressed = false;
+    bool isZKeyPressed = false; //flag to delete the last polygon
+    bool isRMBKeyPressed = false;  //flag to delete a specific point
+    bool action = false; //flag for the recalculating of the intersection area
+    bool isLMBKeyPressed = false; //flag for camera movement
 
     //main loop
     while (window.isOpen())
@@ -110,9 +110,6 @@ int main()
 
         // ss << "ViewMousePos: " << mousePosView.x << " " << mousePosView.y << "\n";
 
-        static bool action = false; //flag for the recalculating of the intersection area
-        static bool isMouseButtonPressed = false; //flag for camera movement
-
         // ss << "DeltaX: "<< (prevMousePosWindow.x - currMousePosWindow.x) << " DeltaY: " << (prevMousePosWindow.y - currMousePosWindow.y) << "\n";
 
         sf::Event event;
@@ -129,7 +126,7 @@ int main()
           
             if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
-                isMouseButtonPressed = false;
+                isLMBKeyPressed = false;
                 float factor = 1/zoom.getFactor();
                 int counter = zoom.getCount();
                 auto temp = sf::Mouse::getPosition(window);
@@ -138,10 +135,9 @@ int main()
             }
             else if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
-                isMouseButtonPressed = true;
+                isLMBKeyPressed = true;
             }
-
-            if(isMouseButtonPressed && event.type == sf::Event::MouseButtonReleased)
+            else if(isLMBKeyPressed && event.type == sf::Event::MouseButtonReleased)
             {
 
                 if(polygons.size() == 0 || polygons.size() != 0 && polygons[polygons.size() - 1].isFinished())
@@ -149,13 +145,18 @@ int main()
                     Polygon polygon;
                     polygon.addVert(currMousePosView, grid, action);
                     polygons.push_back(polygon);
-                    isMouseButtonPressed = false;
+                    // isLMBKeyPressed = false;
                 }
                 else if (polygons.size() != 0 && !polygons[polygons.size() - 1].isFinished())
                 {
                     polygons[polygons.size() - 1].addVert(currMousePosView, grid, action);
-                    isMouseButtonPressed = false;
+                    // isLMBKeyPressed = false;
                 }
+                isLMBKeyPressed = false;
+            }
+            else if(!sf::Mouse::isButtonPressed(sf::Mouse::Left) && isLMBKeyPressed)
+            {
+                isLMBKeyPressed = false;
             }
 
             if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::F11) && isFullscreen)
