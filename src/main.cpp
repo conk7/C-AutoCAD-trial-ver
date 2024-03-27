@@ -217,7 +217,7 @@ int main()
             }
             else if (isRMBKeyPressed)
             {
-                removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx, mousePosView);
+                removeVert(polygons, grid, delVertIdx.vertIdx, delVertIdx.polygonIdx, mousePosView, redrawIntersectionArea);
                 action = true;
                 isRMBKeyPressed = false;
                 delVertIdx = {-1, -1};

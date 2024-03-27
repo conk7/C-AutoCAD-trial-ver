@@ -8,5 +8,10 @@ struct MovingVert
 
 MovingVert findPolygonIdxOfVert(std::vector<Polygon>& polygons, sf::Vector2f coords);
 void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::Vector2f const mousePosView);
-void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, int PolygonIdx, sf::Vector2f mouse);
+void removeVert(std::vector<Polygon>& polygons, 
+                Grid& grid, 
+                int const MovingVertIdx, 
+                int const PolygonIdx, 
+                sf::Vector2f const mousePosView,
+                bool &redrawIntersectionArea);
 
