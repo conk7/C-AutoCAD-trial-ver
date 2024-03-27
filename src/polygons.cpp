@@ -23,7 +23,7 @@ void drawIntersectionArea(sf::RenderWindow& window, std::vector<sf::CircleShape>
     sf::ConvexShape polygon;
     unsigned vertCount = intersectionPoints.size();
     polygon.setPointCount(vertCount);
-    float radius = 5;
+    float radius = 3;
     for(int i = 0; i < vertCount; i++)
     {   
         float x = intersectionPoints[i].getPosition().x + radius;
@@ -33,6 +33,7 @@ void drawIntersectionArea(sf::RenderWindow& window, std::vector<sf::CircleShape>
 
 
     polygon.setFillColor(sf::Color(173,216,230,155));
+    // polygon.setOutlineColor(sf::Color(40,20,255,255));
     polygon.setOutlineThickness(0);
     
     window.draw(polygon);
@@ -143,15 +144,16 @@ void getIntersectionPoints(std::vector<Point> intersectionPointsCoords,
         return;
     }
 
-    float radius = 5;
+    float const radius = 3.f;
+    float const oldRadius = 5.f;
     intersectionPoints.clear();
     for(auto &pointCoords : intersectionPointsCoords)
     {
         sf::CircleShape circle(radius);
-        float x = pointCoords.getX();
-        float y = pointCoords.getY();
+        float x = pointCoords.getX() + oldRadius - radius;
+        float y = pointCoords.getY() + oldRadius - radius;;
         circle.setPosition(sf::Vector2f(x, y));
-        circle.setFillColor(sf::Color(30,220,220,170));
+        circle.setFillColor(sf::Color(30,220,220,200));
         intersectionPoints.push_back(circle);
     }
     redrawIntersectionArea = false;
