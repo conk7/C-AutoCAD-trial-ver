@@ -60,7 +60,13 @@ void findIntersectionPoints(std::vector<Polygon> polygons,
         intersectionPointsCoords.clear();
         return;
     }
-    if (!polygons[polygons.size() - 1].isFinished())
+    else
+    if (!polygons[polygons.size() - 1].isFinished() && polygons.size() <= 2)
+    {
+        intersectionPointsCoords.clear();
+        return;
+    }
+    else if (!polygons[polygons.size() - 1].isFinished() && polygons.size() > 2)
     {
         polygons.pop_back();
     }

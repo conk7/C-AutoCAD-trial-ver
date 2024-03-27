@@ -112,12 +112,21 @@ void removeVert(std::vector<Polygon>& polygons,
             polygons[i].setVerts(verts);
             polygons[i].setEdges(edges);
         }
+        else if(j == 0)
+        {
+            verts.erase(verts.begin());
+            edges.erase(edges.begin());
+            if(verts.size() > 0)
+            {
+                verts[0].setFillColor(sf::Color::Yellow);
+                polygons[i].setVerts(verts);
+                polygons[i].setEdges(edges);
+            }
+            else
+                polygons.erase(polygons.begin() + i);
+        }
         else
         {
-            if (j == 0)
-            {
-                return;
-            }
             verts.erase(verts.begin() + j); 
             VertsAsPoint.erase(VertsAsPoint.begin() + j); 
             edges.erase(edges.begin() + j);
