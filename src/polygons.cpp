@@ -50,18 +50,12 @@ void findIntersectionPoints(std::vector<Polygon> polygons,
                         std::vector<Point> &intersectionPointsCoords, 
                         bool &redrawIntersectionArea)
 {
-    if(polygons.size() == 0) 
+    if(polygons.size() == 0 || polygons.size() == 1) 
     {
         intersectionPointsCoords.clear();
         return;
     }
-    else if(polygons.size() == 1) 
-    {
-        intersectionPointsCoords.clear();
-        return;
-    }
-    else
-    if (!polygons[polygons.size() - 1].isFinished() && polygons.size() <= 2)
+    else if (!polygons[polygons.size() - 1].isFinished() && polygons.size() <= 2)
     {
         intersectionPointsCoords.clear();
         return;
