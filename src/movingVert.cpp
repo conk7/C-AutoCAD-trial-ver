@@ -76,21 +76,31 @@ void moveVert(std::vector<Polygon>& polygons, Grid& grid, MovingVert vert, sf::V
     }
 }
 
-void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, int PolygonIdx, sf::Vector2f mousePosView)
+void removeVert(std::vector<Polygon>& polygons, 
+                Grid& grid, 
+                int const MovingVertIdx, 
+                int const PolygonIdx, 
+                sf::Vector2f const mousePosView,
+                bool &redrawIntersectionArea)
 {
-    int i = PolygonIdx, j = MovingVertIdx;
+    int const i = PolygonIdx, j = MovingVertIdx;
     float const gridSizeF = grid.getGridSizeF();
     sf::Vector2f const newPos = { round(mousePosView.x/gridSizeF) * gridSizeF, round(mousePosView.y/gridSizeF) * gridSizeF };
     auto verts = polygons[i].getVerts();
     auto VertsAsPoint = polygons[i].getVertsCoords();
     auto edges = polygons[i].getEdges();
+
     if (!polygons[i].isFinished())
     {
-        if (verts.size() <= 1) 
+        if (verts.size() == 0) 
         {
             return;
         }
-        if (j == verts.size() - 1)
+        else if (verts.size() == 1) 
+        {
+            polygons.erase(polygons.begin() + i);
+        }
+        else if (j == verts.size() - 1)
         {
             verts.pop_back();
             edges.pop_back();
@@ -102,12 +112,21 @@ void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, i
             polygons[i].setVerts(verts);
             polygons[i].setEdges(edges);
         }
+        else if(j == 0)
+        {
+            verts.erase(verts.begin());
+            edges.erase(edges.begin());
+            if(verts.size() > 0)
+            {
+                verts[0].setFillColor(sf::Color::Yellow);
+                polygons[i].setVerts(verts);
+                polygons[i].setEdges(edges);
+            }
+            else
+                polygons.erase(polygons.begin() + i);
+        }
         else
         {
-            if (j == 0)
-            {
-                return;
-            }
             verts.erase(verts.begin() + j); 
             VertsAsPoint.erase(VertsAsPoint.begin() + j); 
             edges.erase(edges.begin() + j);
@@ -122,6 +141,8 @@ void removeVert(std::vector<Polygon>& polygons, Grid& grid, int MovingVertIdx, i
     {
         if (verts.size() <= 3) 
         {
+            polygons.erase(polygons.begin() + i);
+            redrawIntersectionArea = true;
             return;
         }
     
