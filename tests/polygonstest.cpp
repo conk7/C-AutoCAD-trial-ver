@@ -1,5 +1,5 @@
-#include "../gtest/gtest.h"
-#include "../include/polygons.hpp"
+#include "gtest/gtest.h"
+
 
 // Test fixture for polygons functions
 class PolygonsTest : public ::testing::Test {

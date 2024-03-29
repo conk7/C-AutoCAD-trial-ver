@@ -1,8 +1,6 @@
-#include "gtest/gtest.h"
-#include "../include/grid.hpp"
+#include <gtest/gtest.h>
 #include <cmath>
 #include <sstream>
-#include <SFML/Graphics.hpp>
 
 // Test fixture for Grid class
 class GridTest : public ::testing::Test {
@@ -45,6 +43,13 @@ TEST_F(GridTest, SetGridSizeF) {
     grid.setGridSizeF(100.f);
     ASSERT_EQ(grid.getGridSizeF(), 100.f);
     ASSERT_EQ(grid.getGridSizeU(), 100);
+}
+
+TEST(GridTest, SetGridSizeF) {
+    Grid grid;
+    grid.setGridSizeF(200.f);
+    EXPECT_EQ(grid.getGridSizeF(), 200.f);
+    EXPECT_EQ(grid.getGridSizeU(), 200);
 }
 
 // Test case: Checking grid size after setting it to a non-integer value

@@ -1,5 +1,4 @@
 #include "../gtest/gtest.h"
-#include "../include/mouse.hpp"
 
 // Test fixture for mouse functions
 class MouseTest : public ::testing::Test {
