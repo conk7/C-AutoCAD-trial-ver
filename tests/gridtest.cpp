@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 #include "../include/grid.hpp"
+#include <cmath>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 
 // Test fixture for Grid class

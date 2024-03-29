@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "../include/line.hpp"
-#include <SFML/Graphics.hpp>
 
 // Test fixture for tLine class
 class tLineTest : public ::testing::Test {

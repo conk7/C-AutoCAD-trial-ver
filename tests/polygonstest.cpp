@@ -1,6 +1,5 @@
 #include "../gtest/gtest.h"
 #include "../include/polygons.hpp"
-#include <SFML/Graphics.hpp>
 
 // Test fixture for polygons functions
 class PolygonsTest : public ::testing::Test {

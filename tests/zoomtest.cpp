@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "../include/zoom.hpp"
-#include <SFML/Graphics.hpp>
 
 // Test fixture for Zoom class
 class ZoomTest : public ::testing::Test {

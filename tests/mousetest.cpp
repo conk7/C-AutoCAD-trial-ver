@@ -1,6 +1,5 @@
 #include "../gtest/gtest.h"
 #include "../include/mouse.hpp"
-#include <SFML/Graphics.hpp>
 
 // Test fixture for mouse functions
 class MouseTest : public ::testing::Test {
